@@ -1,19 +1,27 @@
 package com.company.basemanager.mybatisplusdemo;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.company.basemanager.BasemanagerApplicationTests;
 import com.company.basemanager.entity.User;
-import com.company.basemanager.service.UserService;
+import com.company.basemanager.service.IUserService;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * todo
+ *
+ * @author libaogang
+ * @since 2019-08-14 21:14
+ */
 public class UserServiceTest extends BasemanagerApplicationTests {
 
     @Autowired
-    private UserService userService;
+    private IUserService userService;
 
     // 此处会报错，因为数据库存在多条记录
     @Test
@@ -74,4 +82,16 @@ public class UserServiceTest extends BasemanagerApplicationTests {
         System.out.println("是否成功：" + flag);
     }
 
+    @Test
+    public void pageChain() {
+        IPage<User> users = userService.lambdaQuery()
+                .gt(User::getAge, 25)
+                .like(User::getName, "雨")
+                .page(new Page<>(1, 1));
+
+        users.getRecords().forEach(System.out::println);
+    }
+
 }
+
+

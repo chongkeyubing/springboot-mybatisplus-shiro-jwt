@@ -11,15 +11,21 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.additional.query.impl.LambdaQueryChainWrapper;
 import com.baomidou.mybatisplus.extension.service.additional.update.impl.LambdaUpdateChainWrapper;
 import com.company.basemanager.BasemanagerApplicationTests;
-import com.company.basemanager.dao.UserMapper;
 import com.company.basemanager.entity.User;
+import com.company.basemanager.mapper.UserMapper;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
+/**
+ * 基于user表的增删改查测试
+ *
+ * @author libaogang
+ * @since 2019-08-14 20:14
+ */
 public class UserTest extends BasemanagerApplicationTests {
-
     @Autowired
     private UserMapper userMapper;
 
@@ -29,7 +35,7 @@ public class UserTest extends BasemanagerApplicationTests {
         user.setName("张无忌");
         user.setAge(30);
         user.setManagerId(1088248166370832385L);
-        user.setCreateTime(new Date());
+        user.setCreateTime(LocalDateTime.now());
         int rows = userMapper.insert(user);
         System.out.println("影响记录数：" + rows);
     }
@@ -37,7 +43,7 @@ public class UserTest extends BasemanagerApplicationTests {
     @Test
     public void updateById() {
         User user = new User();
-        user.setId(1134013564424658946L);
+        user.setId(1161624434793082882L);
         user.setEmail("zwj@baomidou.com");
         int rows = userMapper.updateById(user);
         System.out.println("影响记录数：" + rows);
@@ -501,7 +507,7 @@ public class UserTest extends BasemanagerApplicationTests {
     }
 
     /**
-     * 
+     *
      * 多个查询参数，其中为空则不做条件
      */
     @Test
@@ -525,5 +531,4 @@ public class UserTest extends BasemanagerApplicationTests {
         List<User> userList = userMapper.selectList(userQuery);
         userList.forEach(System.out::println);
     }
-
 }

@@ -11,12 +11,12 @@ mybatis-plus:
   # type-aliases-package: com.company.basemanager.entity
   global-config:
     db-config:
-      id-type: none  # 主键策略全局配置:默认雪花算法，自动生成长度为20位的int类型
+      id-type: id_worker  # 主键策略全局配置:雪花算法，自动生成长度为20位的int类型
 
 logging:
   level:
-    root: warn
-    com.company.basemanager.dao: trace  # mybatis-plus很多日志都是这个级别
+    root: info
+    com.company.basemanager.mapper: trace  # mybatis-plus很多日志都是这个级别
   pattern:
     console: '%p%m%n' #p:级别 m:内容 n:换行
 
