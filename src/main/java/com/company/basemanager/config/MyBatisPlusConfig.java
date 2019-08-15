@@ -7,6 +7,9 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class MyBatisPlusConfig {
 
+    /**
+     * 分页插件
+     */
     @Bean
     public PaginationInterceptor paginationInterceptor() {
         PaginationInterceptor paginationInterceptor = new PaginationInterceptor();

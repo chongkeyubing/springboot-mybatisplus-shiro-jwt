@@ -1,11 +1,11 @@
-package com.company.basemanager.entity;
+package com.company.basemanager.sys.entity;
 
+import com.baomidou.mybatisplus.annotation.TableName;
+import java.time.LocalDateTime;
+import java.io.Serializable;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
-
-import java.io.Serializable;
-import java.time.LocalDateTime;
 
 /**
  * <p>
@@ -13,11 +13,12 @@ import java.time.LocalDateTime;
  * </p>
  *
  * @author libaogang
- * @since 2019-08-14
+ * @since 2019-08-15
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
+@TableName("sys_user")
 public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;

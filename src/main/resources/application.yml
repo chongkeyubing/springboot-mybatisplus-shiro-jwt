@@ -1,3 +1,8 @@
+server:
+  servlet:
+    context-path: /
+  port: 80
+
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver   #mysql-connector-java 6以上不再使用com.mysql.jdbc.Driver
@@ -11,7 +16,7 @@ mybatis-plus:
   # type-aliases-package: com.company.basemanager.entity
   global-config:
     db-config:
-      id-type: id_worker  # 主键策略全局配置:雪花算法，自动生成长度为20位的int类型
+      id-type: id_worker  # 主键策略全局配置:雪花算法
 
 logging:
   level:

@@ -5,12 +5,11 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.company.basemanager.entity.User;
-import com.company.basemanager.service.IUserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.company.basemanager.service.UserService;
 import org.springframework.web.bind.annotation.RequestMapping;
-
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -25,9 +24,17 @@ import java.util.List;
 @RequestMapping("/user")
 public class UserController {
 
-    @Autowired
-    IUserService userService;
+    @Resource
+    private UserService userService;
 
+    /**
+     * todo
+     * @author libaogang
+     * @param page 页码
+     * @param limit 数量
+     * @return java.util.List<com.company.basemanager.entity.User>
+     * @since 2019-08-15 12:06
+     */
     @RequestMapping("/list")
     public List<User> add(int page,int limit){
         QueryWrapper<User> query = Wrappers.query();

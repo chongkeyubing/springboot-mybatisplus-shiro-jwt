@@ -28,7 +28,7 @@ public class CodeGenerator {
     public static void main(String[] args) {
         // 模块名也是表名前缀，可不填，多张表用英文逗号隔开。
         // 如：moduleName:"sys"  tableName:"sys_user"
-        generate("","user");
+        generate("sys","sys_user");
     }
 
     private static void generate(String moduleName,String tableName) {
@@ -41,9 +41,10 @@ public class CodeGenerator {
         gc.setOutputDir(projectPath + "/src/main/java");
         gc.setAuthor(AUTHOR);
         gc.setOpen(false);
-        gc.setFileOverride(true); //是否覆盖已生成的文件
+        gc.setFileOverride(false); //是否覆盖已生成的文件
         gc.setBaseResultMap(true); //mapper.xml中添加baseResultMap
         gc.setBaseColumnList(true); //mapper.xml中添加baseColumList
+        gc.setServiceName("%sService");  //默认生成的service接口名有I前缀，去掉I前缀。%s为对应实体名
         // gc.setSwagger2(true); 实体属性 Swagger2 注解
         autoGenerator.setGlobalConfig(gc);
 

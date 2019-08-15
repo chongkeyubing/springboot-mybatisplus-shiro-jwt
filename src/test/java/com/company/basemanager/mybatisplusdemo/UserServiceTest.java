@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.company.basemanager.BasemanagerApplicationTests;
 import com.company.basemanager.entity.User;
-import com.company.basemanager.service.IUserService;
+import com.company.basemanager.service.UserService;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -13,7 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * todo
+ * 基于user表的service增删改查测试
  *
  * @author libaogang
  * @since 2019-08-14 21:14
@@ -21,7 +21,7 @@ import java.util.List;
 public class UserServiceTest extends BasemanagerApplicationTests {
 
     @Autowired
-    private IUserService userService;
+    private UserService userService;
 
     // 此处会报错，因为数据库存在多条记录
     @Test
@@ -35,12 +35,10 @@ public class UserServiceTest extends BasemanagerApplicationTests {
         User user1 = new User();
         user1.setName("小可爱");
         user1.setAge(28);
-        user1.setManagerId(1088248166370832385L);
 
         User user2 = new User();
         user2.setName("大傻瓜");
         user2.setAge(19);
-        user2.setManagerId(1088248166370832385L);
 
         List<User> userList = Arrays.asList(user1, user2);
         boolean flag = userService.saveBatch(userList);
@@ -57,7 +55,6 @@ public class UserServiceTest extends BasemanagerApplicationTests {
         user2.setId(1134354221018144774L);
         user2.setName("张三丰");
         user2.setAge(20);
-        user2.setManagerId(1088248166370832385L);
 
         List<User> userList = Arrays.asList(user1, user2);
         boolean flag = userService.saveOrUpdateBatch(userList);

@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 /**
- * 基于user表的增删改查测试
+ * 基于user表的mapper增删改查测试
  *
  * @author libaogang
  * @since 2019-08-14 20:14
@@ -34,7 +34,6 @@ public class UserTest extends BasemanagerApplicationTests {
         User user = new User();
         user.setName("张无忌");
         user.setAge(30);
-        user.setManagerId(1088248166370832385L);
         user.setCreateTime(LocalDateTime.now());
         int rows = userMapper.insert(user);
         System.out.println("影响记录数：" + rows);
