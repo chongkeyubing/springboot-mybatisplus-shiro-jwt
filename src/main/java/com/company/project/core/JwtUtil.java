@@ -3,7 +3,6 @@ package com.company.project.core;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,17 +23,16 @@ import java.util.Date;
  * @since 2019-08-15 21:18
  */
 public class JwtUtil {
-    private static final Logger logger = LoggerFactory.getLogger(JwtUtil.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(JwtUtil.class);
 
     // 过期时间5分钟
-    private static final long EXPIRE_TIME = 30 * 60 * 1000;
+    private static final long EXPIRE_TIME = 60 * 60 * 1000;
 
     // 签名密钥
     private static final String SECRET = "test";
 
     // 写入payload的字段名
     public static final String CLAIM_ACCOUNT = "account";
-
 
     /**
      * 校验token是否正确
@@ -51,9 +49,9 @@ public class JwtUtil {
                     .build();
             verifier.verify(token);
             return true;
-        } catch (Exception e) {
-            logger.error("JwtToken认证解密出现异常:" + e.getMessage());
-            return false;
+        } catch (UnsupportedEncodingException e) {
+            LOGGER.error("不支持secret的编码类型:" + e.getMessage(), e);
+            throw new ServiceException("不支持secret的编码类型:" + e.getMessage());
         }
     }
 
@@ -70,9 +68,9 @@ public class JwtUtil {
         try {
             DecodedJWT jwt = JWT.decode(token);
             return jwt.getClaim(claim).asString();
-        } catch (JWTDecodeException e) {
-            logger.error("解密Token中的公共信息出现JWTDecodeException异常:" + e.getMessage());
-            throw new ServiceException("解密Token中的公共信息出现JWTDecodeException异常:" + e.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("解码token中的公共信息异常:" + e.getMessage(), e);
+            throw new ServiceException("解码token中的公共信息异常:" + e.getMessage());
         }
     }
 
@@ -94,8 +92,8 @@ public class JwtUtil {
                     .withExpiresAt(date)
                     .sign(algorithm);
         } catch (UnsupportedEncodingException e) {
-            logger.error("JWTToken加密出现UnsupportedEncodingException异常:" + e.getMessage());
-            throw new ServiceException("JWTToken加密出现UnsupportedEncodingException异常:" + e.getMessage());
+            LOGGER.error("不支持secret的编码类型:" + e.getMessage(), e);
+            throw new ServiceException("不支持secret的编码类型:" + e.getMessage());
         }
     }
 

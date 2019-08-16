@@ -5,6 +5,7 @@ import com.company.project.core.Result;
 import com.company.project.core.ResultUtil;
 import com.company.project.entity.QueryDemo;
 import com.company.project.service.QueryDemoService;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -26,6 +27,7 @@ public class QueryDemoController {
     @Resource
     private QueryDemoService queryDemoService;
 
+    @RequiresPermissions("sxdfsdf")
     @RequestMapping("/list")
     public Result list() {
         List<QueryDemo> list = queryDemoService.list();

@@ -1,9 +1,10 @@
 package com.company.project.core;
 
 /**
- * @Author: libaogang
- * @Date: 2019-06-06 23:40
- * @Description ajax响应结果封装
+ * ajax响应结果封装
+ *
+ * @author libaogang
+ * @since 2019-06-06 23:40
  */
 public class Result<T> {
     private int code;

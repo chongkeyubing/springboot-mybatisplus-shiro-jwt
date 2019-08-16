@@ -13,7 +13,6 @@
     <version>0.0.1-SNAPSHOT</version>
     <name>springboot-mybatisplus-shiro-jwt</name>
 
-
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -59,14 +58,7 @@
         <dependency>
             <groupId>org.freemarker</groupId>
             <artifactId>freemarker</artifactId>
-            <version>2.3.28</version>
         </dependency>
-
-        <!--<dependency>-->
-            <!--<groupId>org.apache.shiro</groupId>-->
-            <!--<artifactId>shiro-spring-boot-web-starter</artifactId>-->
-            <!--<version>1.4.1</version>-->
-        <!--</dependency>-->
 
         <dependency>
             <groupId>org.apache.shiro</groupId>

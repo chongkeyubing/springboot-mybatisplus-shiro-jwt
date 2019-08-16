@@ -7,7 +7,6 @@ import com.company.project.sys.entity.User;
 import com.company.project.sys.service.UserService;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 
@@ -44,20 +43,6 @@ public class LoginController {
         String token = JwtUtil.sign(account);
         response.setHeader("Authorization", token);
         return ResultUtil.success();
-    }
-
-    /**
-     * 处理非法请求
-     *
-     * @param response response
-     * @return Result
-     * @author libaogang
-     * @since 2019-08-16 13:14
-     */
-    @RequestMapping("/unauthorized")
-    public Result unauthorized(HttpServletResponse response) {
-        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        return ResultUtil.fail("unauthorized");
     }
 
 }

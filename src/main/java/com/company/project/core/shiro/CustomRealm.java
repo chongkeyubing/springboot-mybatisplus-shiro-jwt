@@ -1,9 +1,7 @@
 package com.company.project.core.shiro;
 
 import com.company.project.core.JwtUtil;
-import com.company.project.sys.entity.User;
 import com.company.project.sys.service.UserService;
-import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.SimpleAuthenticationInfo;
@@ -39,20 +37,20 @@ public class CustomRealm extends AuthorizingRealm {
         // 前台传过来的token
         String token = (String) authenticationToken.getPrincipal();
 
-        // 从token中获取account
-        String account = JwtUtil.getClaim(token, JwtUtil.CLAIM_ACCOUNT);
+//        // 从token中获取account
+//        String account = JwtUtil.getClaim(token, JwtUtil.CLAIM_ACCOUNT);
+//
+//        if (account == null) {
+//            throw new AuthenticationException();
+//        }
+//
+//        // 根据账号查询用户信息
+//        User user = userService.lambdaQuery().eq(User::getAccount, account).one();
+//        if (null == user) {
+//            throw new AuthenticationException();
+//        }
 
-        if (account == null) {
-            throw new AuthenticationException("token invalid");
-        }
-
-        // 根据账号查询用户信息
-        User user = userService.lambdaQuery().eq(User::getAccount, account).one();
-
-        if (user == null || !JwtUtil.verify(token)) {
-            throw new AuthenticationException("token invalid");
-        }
-
+        JwtUtil.verify(token);
         return new SimpleAuthenticationInfo(token, token, this.getName());
     }
 

@@ -42,9 +42,10 @@ public class ShiroConfig {
      * ssl：比如/admins/user/**=ssl没有参数，表示安全的url请求，协议为https
      * user：比如/admins/user/**=user没有参数表示必须存在用户，当登入操作时不做检查
      * 详情见文档 http://shiro.apache.org/web.html#urls-
-     * @author libaogang
+     *
      * @param securityManager securityManager
      * @return org.apache.shiro.spring.web.ShiroFilterFactoryBean
+     * @author libaogang
      * @since 2019-08-16 7:10
      */
     @Bean
@@ -66,10 +67,10 @@ public class ShiroConfig {
 
         //开放接口
         filterChainDefinitionMap.put("/login", "anon");
-        filterChainDefinitionMap.put("/unauthorized", "anon");
 
         // 所有请求通过自己的JwtFilter
         filterChainDefinitionMap.put("/**", "jwt");
+
 
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
         return shiroFilterFactoryBean;
@@ -128,5 +129,4 @@ public class ShiroConfig {
         advisor.setSecurityManager(securityManager);
         return advisor;
     }
-
 }
