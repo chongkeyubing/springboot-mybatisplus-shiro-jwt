@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.company</groupId>
-    <artifactId>baseManager</artifactId>
+    <artifactId>springboot-mybatisplus-shiro-jwt</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>basemanager</name>
-    <description>Demo project for Spring Boot</description>
+    <name>springboot-mybatisplus-shiro-jwt</name>
+
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
