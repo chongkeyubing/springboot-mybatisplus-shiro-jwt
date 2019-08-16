@@ -1,24 +1,23 @@
 package com.company.basemanager.entity;
 
+import java.time.LocalDateTime;
+import java.io.Serializable;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
-import java.io.Serializable;
-import java.time.LocalDateTime;
-
 /**
  * <p>
- * 用户表
+ * mybatis-plus 查询demo表
  * </p>
  *
  * @author libaogang
- * @since 2019-08-14
+ * @since 2019-08-16
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-public class User implements Serializable {
+public class QueryDemo implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

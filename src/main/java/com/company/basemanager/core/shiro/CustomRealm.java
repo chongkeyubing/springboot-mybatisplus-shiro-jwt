@@ -1,8 +1,8 @@
 package com.company.basemanager.core.shiro;
 
 import com.company.basemanager.core.JwtUtil;
-import com.company.basemanager.entity.User;
-import com.company.basemanager.service.UserService;
+import com.company.basemanager.sys.entity.User;
+import com.company.basemanager.sys.service.UserService;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
@@ -11,15 +11,17 @@ import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
-import org.springframework.beans.factory.annotation.Autowired;
+
+import javax.annotation.Resource;
 
 /**
  * shiro自定义realm
  */
 public class CustomRealm extends AuthorizingRealm {
 
-    @Autowired
+    @Resource
     private UserService userService;
+
 
     /**
      * 大坑，必须重写此方法，不然Shiro会报错
@@ -30,7 +32,7 @@ public class CustomRealm extends AuthorizingRealm {
     }
 
     /**
-     * 获取身份验证信息，即数据库的包括账号密码的用户信息
+     * 校验每一次请求中的token
      */
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) {
@@ -44,11 +46,11 @@ public class CustomRealm extends AuthorizingRealm {
             throw new AuthenticationException("非法token");   // token invalid
         }
 
-        // 查询用户信息
-        User user = userService.lambdaQuery().eq(User::getAccount,account).one();
+        // 根据账号查询用户信息
+        User user = userService.lambdaQuery().eq(User::getAccount, account).one();
 
-        if (user != null && !JwtUtil.verify(token, user.getPassword())) {
-            throw new AuthenticationException("用户名或者密码错误");
+        if (user == null || !JwtUtil.verify(token)) {
+            throw new AuthenticationException("非法token");
         }
 
         return new SimpleAuthenticationInfo(token, token, this.getName());

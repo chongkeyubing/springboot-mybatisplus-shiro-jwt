@@ -12,7 +12,13 @@ import java.io.UnsupportedEncodingException;
 import java.util.Date;
 
 /**
- * JWT工具类（使用用户密码生成签名）
+ * JWT工具类
+ * <p>
+ * jwt组成：Header(头部).Payload(载荷).Signature(签名)
+ * <p>
+ * 算法：base64enc({"alg":"HS256","typ":"JWT"}).base64enc({"account":"libaogang","exp":"1441594722"}).HMACSHA256(base64enc(header)+"."+base64enc(header),secret)
+ * <p>
+ * jwt串：eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1NjU5MTI1MjYsImFjY291bnQiOiJsaWJhb2dhbmcifQ.qzVl_-5okCyWyarE5tbSYFXe7dcnasLU9JoKXwhYug0
  *
  * @author libaogang
  * @since 2019-08-15 21:18
@@ -21,21 +27,29 @@ public class JwtUtil {
     private static final Logger logger = LoggerFactory.getLogger(JwtUtil.class);
 
     // 过期时间5分钟
-    private static final long EXPIRE_TIME = 5*60*1000;
+    private static final long EXPIRE_TIME = 5 * 60 * 1000;
+
+    // 签名密钥
+    private static final String SECRET = "test";
+
+    // 写入payload的字段名
+    private static final String CLAIM_ACCOUNT = "account";
+
 
     /**
      * 校验token是否正确
-     * @author libaogang
+     *
      * @param token Token
      * @return boolean 是否正确
+     * @author libaogang
      * @since 2019-08-15 21:22
      */
-    public static boolean verify(String token, String secret) {
+    public static boolean verify(String token) {
         try {
-            Algorithm algorithm = Algorithm.HMAC256(secret);
+            Algorithm algorithm = Algorithm.HMAC256(SECRET);
             JWTVerifier verifier = JWT.require(algorithm)
                     .build();
-            DecodedJWT jwt = verifier.verify(token);
+            verifier.verify(token);
             return true;
         } catch (UnsupportedEncodingException e) {
             logger.error("JWTToken认证解密出现UnsupportedEncodingException异常:" + e.getMessage());
@@ -44,11 +58,12 @@ public class JwtUtil {
     }
 
     /**
-     * 获得Token中的信息无需secret解密也能获得
-     * @author libaogang
+     * 获得Token中的信息
+     *
      * @param token Token
-     * @param claim 要获取的信息字段名
-     * @return java.lang.String
+     * @param claim 要获取的字段名
+     * @return java.lang.String 返回要获取的字段值
+     * @author libaogang
      * @since 2019-08-15 21:25
      */
     public static String getClaim(String token, String claim) {
@@ -62,25 +77,36 @@ public class JwtUtil {
     }
 
     /**
-     * 使用用户密码生成签名（也可以自定义secret常量）
-     * @param account 帐号
-     * @param secret 用户密码
-     * @return java.lang.String 返回加密的Token
+     * 生成token
+     *
+     * @param account 用户账号，写入token payload部分
+     * @return java.lang.String 返回token
      * @author Wang926454
-     * @date 2018/8/31 9:07
+     * @since 2018/8/31 9:07
      */
-    public static String sign(String account, String secret) {
+    public static String sign(String account) {
         try {
-            Date date = new Date(System.currentTimeMillis()+EXPIRE_TIME);
-            Algorithm algorithm = Algorithm.HMAC256(secret);
+            Date date = new Date(System.currentTimeMillis() + EXPIRE_TIME);
+            Algorithm algorithm = Algorithm.HMAC256(SECRET);  //算法
             // 附带account信息
             return JWT.create()
-                    .withClaim("account", account)   //Payload 部分
+                    .withClaim(CLAIM_ACCOUNT, account)   //Payload 部分
                     .withExpiresAt(date)
                     .sign(algorithm);
         } catch (UnsupportedEncodingException e) {
             logger.error("JWTToken加密出现UnsupportedEncodingException异常:" + e.getMessage());
             throw new ServiceException("JWTToken加密出现UnsupportedEncodingException异常:" + e.getMessage());
         }
+    }
+
+    public static void main(String[] args) {
+        String token = sign("libaogang");
+        System.out.println(token);
+
+        String account = getClaim(token, CLAIM_ACCOUNT);
+        System.out.println(account);
+
+        System.out.println(verify(token));
+
     }
 }

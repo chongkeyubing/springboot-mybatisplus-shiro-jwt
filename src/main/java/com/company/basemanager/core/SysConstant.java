@@ -11,9 +11,5 @@ public class SysConstant {
     //MD5加密盐值
     public static final String SALT = "test";
 
-    public static final String SECRET = "test";
-
-    //token过期时间，单位毫秒
-    public static final long EXPIRE_TIME = 30 * 60 * 1000;
 
 }

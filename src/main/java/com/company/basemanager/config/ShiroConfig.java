@@ -2,11 +2,17 @@ package com.company.basemanager.config;
 
 import com.company.basemanager.core.shiro.CustomRealm;
 import com.company.basemanager.core.shiro.JwtFilter;
+import org.apache.shiro.mgt.DefaultSessionStorageEvaluator;
+import org.apache.shiro.mgt.DefaultSubjectDAO;
 import org.apache.shiro.mgt.SecurityManager;
+import org.apache.shiro.spring.LifecycleBeanPostProcessor;
+import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
+import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 
 import javax.servlet.Filter;
 import java.util.HashMap;
@@ -23,9 +29,28 @@ import java.util.Map;
 @Configuration
 public class ShiroConfig {
 
+    /**
+     * 配置过滤器
+     * Shiro自带拦截器配置规则
+     * rest：比如/admins/user/**=rest[user],根据请求的方法，相当于/admins/user/**=perms[user：method] ,其中method为post，get，delete等
+     * port：比如/admins/user/**=port[8081],当请求的url的端口不是8081是跳转到schemal：//serverName：8081?queryString,其中schmal是协议http或https等，serverName是你访问的host,8081是url配置里port的端口，queryString是你访问的url里的？后面的参数
+     * perms：比如/admins/user/**=perms[user：add：*],perms参数可以写多个，多个时必须加上引号，并且参数之间用逗号分割，比如/admins/user/**=perms["user：add：*,user：modify：*"]，当有多个参数时必须每个参数都通过才通过，想当于isPermitedAll()方法
+     * roles：比如/admins/user/**=roles[admin],参数可以写多个，多个时必须加上引号，并且参数之间用逗号分割，当有多个参数时，比如/admins/user/**=roles["admin,guest"],每个参数通过才算通过，相当于hasAllRoles()方法。
+     * anon：比如/admins/**=anon 没有参数，表示可以匿名使用
+     * authc：比如/admins/user/**=authc表示需要认证才能使用，没有参数
+     * authcBasic：比如/admins/user/**=authcBasic没有参数表示httpBasic认证
+     * ssl：比如/admins/user/**=ssl没有参数，表示安全的url请求，协议为https
+     * user：比如/admins/user/**=user没有参数表示必须存在用户，当登入操作时不做检查
+     * 详情见文档 http://shiro.apache.org/web.html#urls-
+     * @author libaogang
+     * @param securityManager securityManager
+     * @return org.apache.shiro.spring.web.ShiroFilterFactoryBean
+     * @since 2019-08-16 7:10
+     */
     @Bean
-    public ShiroFilterFactoryBean shirFilter(SecurityManager securityManager) {
+    public ShiroFilterFactoryBean shiroFilter(SecurityManager securityManager) {
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
+
         // 添加自己的过滤器取名为jwt
         Map<String, Filter> filterMap = new HashMap<>(16);
         filterMap.put("jwt", new JwtFilter());
@@ -36,20 +61,19 @@ public class ShiroConfig {
         // setLoginUrl 如果不设置值，默认会自动寻找Web工程根目录下的"/login.jsp"页面 或 "/login" 映射
         shiroFilterFactoryBean.setLoginUrl("/login");
         // 设置无权限时跳转的 url;
-//        shiroFilterFactoryBean.setUnauthorizedUrl("/notRole");
+        shiroFilterFactoryBean.setUnauthorizedUrl("/401");
 
         // 设置拦截器链
         Map<String, String> filterChainDefinitionMap = new LinkedHashMap<>();
-//        //游客，开发权限
-//        filterChainDefinitionMap.put("/guest/**", "anon");
-//        //用户，需要角色权限 “user”
-//        filterChainDefinitionMap.put("/user/**", "roles[user]");
-//        //管理员，需要角色权限 “admin”
-//        filterChainDefinitionMap.put("/admin/**", "roles[admin]");
+
         //开放登陆接口
         filterChainDefinitionMap.put("/login", "anon");
+
         //其余接口一律拦截，这行代码必须放在所有权限设置的最后，不然会导致所有 url 都被拦截
-        filterChainDefinitionMap.put("/**", "authc");
+        //filterChainDefinitionMap.put("/**", "authc");
+
+        // 替换authc过滤器，所有请求通过自己的JwtFilter
+        filterChainDefinitionMap.put("/**", "jwt");
 
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
         System.out.println("Shiro拦截器工厂类注入成功");
@@ -59,19 +83,55 @@ public class ShiroConfig {
     /**
      * 注入 securityManager
      */
-    @Bean
-    public SecurityManager securityManager() {
+    @Bean("securityManager")
+    public DefaultWebSecurityManager securityManager(CustomRealm customRealm) {
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
         // 设置realm
-        securityManager.setRealm(customRealm());
+        securityManager.setRealm(customRealm);
+
+        // 关闭Shiro自带的session
+        DefaultSubjectDAO subjectDAO = new DefaultSubjectDAO();
+        DefaultSessionStorageEvaluator defaultSessionStorageEvaluator = new DefaultSessionStorageEvaluator();
+        defaultSessionStorageEvaluator.setSessionStorageEnabled(false);
+        subjectDAO.setSessionStorageEvaluator(defaultSessionStorageEvaluator);
+        securityManager.setSubjectDAO(subjectDAO);
+
+        // 设置自定义Cache缓存
+        //securityManager.setCacheManager(new CustomCacheManager());
+
         return securityManager;
     }
 
     /**
-     * 自定义身份认证
+     * 自定义realm
      */
     @Bean
     public CustomRealm customRealm() {
         return new CustomRealm();
     }
+
+    /**
+     * 下面的代码是添加注解支持
+     */
+    @Bean
+    @DependsOn("lifecycleBeanPostProcessor")
+    public DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator() {
+        DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator = new DefaultAdvisorAutoProxyCreator();
+        // 强制使用cglib，防止重复代理和可能引起代理出错的问题，https://zhuanlan.zhihu.com/p/29161098
+        defaultAdvisorAutoProxyCreator.setProxyTargetClass(true);
+        return defaultAdvisorAutoProxyCreator;
+    }
+
+    @Bean
+    public LifecycleBeanPostProcessor lifecycleBeanPostProcessor() {
+        return new LifecycleBeanPostProcessor();
+    }
+
+    @Bean
+    public AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor(DefaultWebSecurityManager securityManager) {
+        AuthorizationAttributeSourceAdvisor advisor = new AuthorizationAttributeSourceAdvisor();
+        advisor.setSecurityManager(securityManager);
+        return advisor;
+    }
+
 }

@@ -8,18 +8,21 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * todo
+ * JwtFilter
  *
  * @author libaogang
  * @since 2019-08-15 20:55
  */
 public class JwtFilter extends BasicHttpAuthenticationFilter {
 
+    private static final String AUTHORIZATION_HEADER = "Authorization";
+
     @Override
     protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) throws UnauthorizedException {
         //判断请求的请求头是否带上 "token"
-        if (((HttpServletRequest) request).getHeader("token") != null) {
-            //如果存在，则进入 executeLogin 方法执行登入，检查 token 是否正确
+        if (((HttpServletRequest) request).getHeader(AUTHORIZATION_HEADER) != null) {
+            //如果存在，则进入 executeLogin 方法执行登入，检查 token 是否正确。
+            //因为token机制下每次请求都要验证token，相当于每次请求都登陆
             try {
                 executeLogin(request, response);
                 return true;
@@ -34,8 +37,7 @@ public class JwtFilter extends BasicHttpAuthenticationFilter {
 
     @Override
     protected boolean executeLogin(ServletRequest request, ServletResponse response) throws Exception {
-        HttpServletRequest httpServletRequest = (HttpServletRequest) request;
-        String token = httpServletRequest.getHeader("token");
+        String token = ((HttpServletRequest) request).getHeader(AUTHORIZATION_HEADER);
         JwtToken jwtToken = new JwtToken(token);
         // 提交给realm进行登入，如果错误他会抛出异常并被捕获
         getSubject(request, response).login(jwtToken);
