@@ -14,12 +14,10 @@ import javax.servlet.http.HttpSession;
  */
 public class WebContextHolder {
     public static HttpServletRequest getRequest() {
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-        return request;
+        return ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
     }
 
     public static HttpSession getSession() {
-        HttpSession session = getRequest().getSession();
-        return session;
+        return getRequest().getSession();
     }
 }

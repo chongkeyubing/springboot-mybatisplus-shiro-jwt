@@ -1,4 +1,4 @@
-#生成环境配置
+#生产环境配置
 server:
   servlet:
     context-path: /

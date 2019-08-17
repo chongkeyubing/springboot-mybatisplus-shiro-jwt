@@ -20,7 +20,6 @@ public class CustomRealm extends AuthorizingRealm {
     @Resource
     private UserService userService;
 
-
     /**
      * 大坑，必须重写此方法，不然Shiro会报错
      */
@@ -30,7 +29,7 @@ public class CustomRealm extends AuthorizingRealm {
     }
 
     /**
-     * 校验每一次请求中的token
+     * 验证token的有效性
      */
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) {

@@ -11,13 +11,6 @@ spring:
     username: root
     password: root
 
-  # 404交给异常处理器处理
-  mvc:
-    throw-exception-if-no-handler-found: true
-  resources:
-    add-mappings: false
-
-
 mybatis-plus:
   # config-location: classpath:mybatis-config.xml
   mapper-locations: classpath:mapper/**/*Mapper.xml  #指定mapper.xml的位置

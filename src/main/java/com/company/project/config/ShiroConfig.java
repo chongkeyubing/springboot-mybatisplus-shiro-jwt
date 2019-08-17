@@ -68,6 +68,7 @@ public class ShiroConfig {
         //开放接口
         filterChainDefinitionMap.put("/login", "anon");
 
+
         // 所有请求通过自己的JwtFilter
         filterChainDefinitionMap.put("/**", "jwt");
 

@@ -1,3 +1,3 @@
 spring:
   profiles:
-    active: pro #激活生成环境配置
+    active: dev #激活生成环境配置
