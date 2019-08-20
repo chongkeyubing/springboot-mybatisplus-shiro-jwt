@@ -29,6 +29,7 @@ import java.util.Map;
  * @since 2019-08-14 20:14
  */
 public class QueryDemoMapperTest extends ApplicationTests {
+
     @Autowired
     private QueryDemoMapper queryDemoMapper;
 

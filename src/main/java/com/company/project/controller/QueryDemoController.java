@@ -25,7 +25,7 @@ public class QueryDemoController {
 
     @Resource
     private QueryDemoService queryDemoService;
-    
+
     @RequestMapping("/list")
     public Result list() {
         List<QueryDemo> list = queryDemoService.list();

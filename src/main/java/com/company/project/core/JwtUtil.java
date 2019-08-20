@@ -51,7 +51,7 @@ public class JwtUtil {
             return true;
         } catch (UnsupportedEncodingException e) {
             LOGGER.error("不支持secret的编码类型:" + e.getMessage(), e);
-            throw new ServiceException("不支持secret的编码类型:" + e.getMessage());
+            throw new BusinessException("不支持secret的编码类型:" + e.getMessage());
         }
     }
 
@@ -70,7 +70,7 @@ public class JwtUtil {
             return jwt.getClaim(claim).asString();
         } catch (Exception e) {
             LOGGER.error("解码token中的公共信息异常:" + e.getMessage(), e);
-            throw new ServiceException("解码token中的公共信息异常:" + e.getMessage());
+            throw new BusinessException("解码token中的公共信息异常:" + e.getMessage());
         }
     }
 
@@ -93,7 +93,7 @@ public class JwtUtil {
                     .sign(algorithm);
         } catch (UnsupportedEncodingException e) {
             LOGGER.error("不支持secret的编码类型:" + e.getMessage(), e);
-            throw new ServiceException("不支持secret的编码类型:" + e.getMessage());
+            throw new BusinessException("不支持secret的编码类型:" + e.getMessage());
         }
     }
 

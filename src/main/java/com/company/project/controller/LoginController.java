@@ -3,10 +3,13 @@ package com.company.project.controller;
 import com.company.project.core.JwtUtil;
 import com.company.project.core.Result;
 import com.company.project.core.ResultUtil;
+import com.company.project.core.BusinessException;
 import com.company.project.sys.entity.User;
 import com.company.project.sys.service.UserService;
+import com.company.project.util.MD5Util;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 
@@ -35,8 +38,9 @@ public class LoginController {
     public Result login(String account, String password, HttpServletResponse response) {
         //校验账号密码
         User user = userService.lambdaQuery().eq(User::getAccount, account).one();
+        password = MD5Util.encrypt(password);
         if (null == user || !password.equals(user.getPassword())) {
-            return ResultUtil.fail("账号或密码错误");
+            throw new BusinessException("账号或者密码错误");
         }
 
         //登陆成功，响应头塞入token
@@ -44,5 +48,7 @@ public class LoginController {
         response.setHeader("Authorization", token);
         return ResultUtil.success();
     }
+
+
 
 }

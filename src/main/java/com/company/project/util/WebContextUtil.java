@@ -12,7 +12,7 @@ import javax.servlet.http.HttpSession;
  * @author libaogang
  * @since 2019-08-16 7:56
  */
-public class WebContextHolder {
+public class WebContextUtil {
     public static HttpServletRequest getRequest() {
         return ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
     }

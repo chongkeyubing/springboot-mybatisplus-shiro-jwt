@@ -18,4 +18,17 @@
         id, account, password, name, age, email, create_time
     </sql>
 
+    <select id="selectAll" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from user
+        ${ew.customSqlSegment}
+    </select>
+
+    <select id="selectQueryDemoPage" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from user
+        ${ew.customSqlSegment}
+    </select>
 </mapper>

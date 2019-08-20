@@ -1,7 +1,6 @@
 package com.company.project.mybatisplusdemo;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.company.project.ApplicationTests;
 import com.company.project.entity.QueryDemo;
@@ -22,13 +21,6 @@ public class QueryDemoServiceTest extends ApplicationTests {
 
     @Autowired
     private QueryDemoService queryDemoService;
-
-    // 此处会报错，因为数据库存在多条记录
-    @Test
-    public void getOne() {
-        QueryDemo one = queryDemoService.getOne(Wrappers.<QueryDemo>lambdaQuery().gt(QueryDemo::getAge, 25));
-        System.out.println(one);
-    }
 
     @Test
     public void insertBatch() {
