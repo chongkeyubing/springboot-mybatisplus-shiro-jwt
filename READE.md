@@ -1,1 +1,0 @@
-springboot + mybatisplus + shiro + jwt
