@@ -19,21 +19,25 @@ import java.util.List;
  * @since 2019-08-14 9:22
  */
 public class CodeGenerator {
+    //jdbc配置
     private static final String JDBC_URL = "jdbc:mysql://localhost:3306/basemanager?useUnicode=true&useSSL=false&characterEncoding=utf8&serverTimezone=GMT%2B8";
     private static final String JDBC_USERNAME = "root";
     private static final String JDBC_PASSWORD = "root";
     private static final String JDBC_DIVER_CLASS_NAME = "com.mysql.cj.jdbc.Driver";
 
     private static final String BASE_PACKAGE = "com.company.project";
-    private static final String AUTHOR = "libaogang";
+    private static final String AUTHOR = "libaogang"; //作者
+
+    private static final boolean OVERRIDE = true; //是否覆盖已生成文件
+    private static final String MODULE_NAME = "sys";  //模块名
+    private static final String TABLE_PREFIX = "sys_";  //表前缀
+    private static final String TABLE_NAME = "sys_user";  //表名,多张表用英文逗号隔开。
 
     public static void main(String[] args) {
-        // 模块名也是表名前缀，可不填，多张表用英文逗号隔开。
-        // 如：moduleName:"sys"  tableName:"sys_user"
-        generate("sys", "sys_user");
+        generate();
     }
 
-    private static void generate(String moduleName, String tableName) {
+    private static void generate() {
         // 代码生成器
         AutoGenerator autoGenerator = new AutoGenerator();
 
@@ -43,7 +47,7 @@ public class CodeGenerator {
         gc.setOutputDir(projectPath + "/src/main/java");
         gc.setAuthor(AUTHOR);
         gc.setOpen(false);
-        gc.setFileOverride(false); //是否覆盖已生成的文件
+        gc.setFileOverride(OVERRIDE); //是否覆盖已生成的文件
         gc.setBaseResultMap(true); //mapper.xml中添加baseResultMap
         gc.setBaseColumnList(true); //mapper.xml中添加baseColumList
         gc.setServiceName("%sService");  //默认生成的service接口名有I前缀，去掉I前缀。%s为对应实体名
@@ -60,11 +64,9 @@ public class CodeGenerator {
         //strategy.setSuperEntityClass("com.baomidou.ant.common.BaseEntity");//父entity
         //strategy.setSuperEntityColumns("id"); // 写于父类中的公共字段
 
-        strategy.setInclude(tableName.split(","));
+        strategy.setInclude(TABLE_NAME.split(","));
         strategy.setControllerMappingHyphenStyle(true);  //驼峰转连字符
-        if (StringUtils.isNotEmpty(moduleName)) {
-            strategy.setTablePrefix(moduleName + "_");  //表前缀，即模块名,生成的文件将去掉前缀
-        }
+        strategy.setTablePrefix(TABLE_PREFIX);  //表前缀，生成的文件将去掉前缀
         autoGenerator.setStrategy(strategy);
 
         // 数据源配置
@@ -78,8 +80,8 @@ public class CodeGenerator {
 
         // 包配置
         PackageConfig pc = new PackageConfig();
-        if (StringUtils.isNotEmpty(moduleName)) {
-            pc.setModuleName(moduleName);
+        if (StringUtils.isNotEmpty(MODULE_NAME)) {
+            pc.setModuleName(MODULE_NAME);
         }
         pc.setParent(BASE_PACKAGE);
         autoGenerator.setPackageInfo(pc);
@@ -92,14 +94,16 @@ public class CodeGenerator {
             }
         };
 
-        String templatePath = "/templates/mapper.xml.ftl";  //该模板文件位于mybatis-plus-generator jar包中
+        //该模板文件位于mybatis-plus-generator jar包中
+        String templatePath = "/templates/mapper.xml.ftl";
+
         // 自定义输出配置
         List<FileOutConfig> focList = new ArrayList<>();
         focList.add(new FileOutConfig(templatePath) {
             @Override
             public String outputFile(TableInfo tableInfo) {
                 // 自定义输出文件名 ， 如果你 Entity 设置了前后缀、此处注意 xml 的名称会跟着发生变化！！
-                return projectPath + "/src/main/resources/mapper/" + moduleName
+                return projectPath + "/src/main/resources/mapper/" + MODULE_NAME
                         + "/" + tableInfo.getEntityName() + "Mapper" + StringPool.DOT_XML;
             }
         });

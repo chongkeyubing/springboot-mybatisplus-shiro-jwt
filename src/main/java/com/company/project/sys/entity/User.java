@@ -1,11 +1,12 @@
 package com.company.project.sys.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
-import java.time.LocalDateTime;
-import java.io.Serializable;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+
+import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
  * <p>
@@ -13,7 +14,7 @@ import lombok.experimental.Accessors;
  * </p>
  *
  * @author libaogang
- * @since 2019-08-16
+ * @since 2019-08-24
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
