@@ -1,7 +1,10 @@
 package com.company.project.core.shiro;
 
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.company.project.core.JwtUtil;
+import com.company.project.sys.entity.User;
 import com.company.project.sys.service.UserService;
+import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.SimpleAuthenticationInfo;
@@ -15,7 +18,7 @@ import javax.annotation.Resource;
 /**
  * shiro自定义realm
  */
-public class CustomRealm extends AuthorizingRealm {
+public class ShiroRealm extends AuthorizingRealm {
 
     @Resource
     private UserService userService;
@@ -29,27 +32,32 @@ public class CustomRealm extends AuthorizingRealm {
     }
 
     /**
-     * 验证token的有效性
+     * 验证token
      */
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) {
         // 前台传过来的token
         String token = (String) authenticationToken.getPrincipal();
 
-//        // 从token中获取account
-//        String account = JwtUtil.getClaim(token, JwtUtil.CLAIM_ACCOUNT);
-//
-//        if (account == null) {
-//            throw new AuthenticationException();
-//        }
-//
-//        // 根据账号查询用户信息
-//        User user = userService.lambdaQuery().eq(User::getAccount, account).one();
-//        if (null == user) {
-//            throw new AuthenticationException();
-//        }
+        try {
+            // 从token中获取account
+            String account = JwtUtil.getClaim(token, JwtUtil.CLAIM_ACCOUNT);
+            // 根据账号查询用户信息
+            User user = userService.lambdaQuery().eq(User::getAccount, account).one();
+            if (null == user) {
+                throw new AuthenticationException(JwtToken.TOKEN_INVALID);
+            }
+            // 用户被锁定
+//            if (0 == user.getStatus()) {
+//                throw new AuthenticationException("token invalid");
+//            }
+            JwtUtil.verify(token);
 
-        JwtUtil.verify(token);
+        } catch (TokenExpiredException e) {
+            throw new AuthenticationException(JwtToken.TOKEN_EXPIRED);
+        } catch (Exception e) {
+            throw new AuthenticationException(JwtToken.TOKEN_INVALID);
+        }
         return new SimpleAuthenticationInfo(token, token, this.getName());
     }
 

@@ -10,6 +10,9 @@ import org.apache.shiro.authc.AuthenticationToken;
  */
 public class JwtToken implements AuthenticationToken {
 
+    public static final String TOKEN_INVALID = "token invalid";
+    public static final String TOKEN_EXPIRED = "token expired";
+
     private String token;
 
     public JwtToken(String token) {

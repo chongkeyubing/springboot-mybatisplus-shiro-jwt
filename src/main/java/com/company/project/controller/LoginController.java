@@ -38,8 +38,7 @@ public class LoginController {
     public Result login(String account, String password, HttpServletResponse response) {
         //校验账号密码
         User user = userService.lambdaQuery().eq(User::getAccount, account).one();
-        password = MD5Util.encrypt(password);
-        if (null == user || !password.equals(user.getPassword())) {
+        if (null == user || !MD5Util.encrypt(password).equals(user.getPassword())) {
             throw new BusinessException("账号或者密码错误");
         }
 
@@ -48,7 +47,6 @@ public class LoginController {
         response.setHeader("Authorization", token);
         return ResultUtil.success();
     }
-
 
 
 }

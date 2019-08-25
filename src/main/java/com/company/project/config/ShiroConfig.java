@@ -1,6 +1,6 @@
 package com.company.project.config;
 
-import com.company.project.core.shiro.CustomRealm;
+import com.company.project.core.shiro.ShiroRealm;
 import com.company.project.core.shiro.JwtFilter;
 import org.apache.shiro.mgt.DefaultSessionStorageEvaluator;
 import org.apache.shiro.mgt.DefaultSubjectDAO;
@@ -79,10 +79,10 @@ public class ShiroConfig {
      * 注入 securityManager
      */
     @Bean("securityManager")
-    public DefaultWebSecurityManager securityManager(CustomRealm customRealm) {
+    public DefaultWebSecurityManager securityManager(ShiroRealm shiroRealm) {
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
         // 设置realm
-        securityManager.setRealm(customRealm);
+        securityManager.setRealm(shiroRealm);
 
         // 关闭Shiro自带的session
         DefaultSubjectDAO subjectDAO = new DefaultSubjectDAO();
@@ -101,8 +101,8 @@ public class ShiroConfig {
      * 自定义realm
      */
     @Bean
-    public CustomRealm customRealm() {
-        return new CustomRealm();
+    public ShiroRealm shiroRealm() {
+        return new ShiroRealm();
     }
 
     /**
