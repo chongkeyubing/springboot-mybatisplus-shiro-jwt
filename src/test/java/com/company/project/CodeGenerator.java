@@ -20,7 +20,7 @@ import java.util.List;
  */
 public class CodeGenerator {
     //jdbc配置
-    private static final String JDBC_URL = "jdbc:mysql://localhost:3306/basemanager?useUnicode=true&useSSL=false&characterEncoding=utf8&serverTimezone=GMT%2B8";
+    private static final String JDBC_URL = "jdbc:mysql://localhost:3306/myadmin?useUnicode=true&useSSL=false&characterEncoding=utf8&serverTimezone=GMT%2B8";
     private static final String JDBC_USERNAME = "root";
     private static final String JDBC_PASSWORD = "root";
     private static final String JDBC_DIVER_CLASS_NAME = "com.mysql.cj.jdbc.Driver";

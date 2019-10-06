@@ -3,9 +3,10 @@ package com.company.project.core.layui;
 import com.company.project.core.Result;
 
 /**
- * @Author: libaogang
- * @Date: 2019-07-02 11:26
- * @Description layui表格数据封装
+ * layui表格数据封装
+ *
+ * @author libaogang
+ * @since 2019-07-02 11:26
  */
 public class LayuiTableResult<T> extends Result<T> {
     private long count;

@@ -1,9 +1,9 @@
-package com.company.project.controller;
+package com.company.project.sys.controller;
 
+import com.company.project.core.BusinessException;
 import com.company.project.core.JwtUtil;
 import com.company.project.core.Result;
 import com.company.project.core.ResultUtil;
-import com.company.project.core.BusinessException;
 import com.company.project.sys.entity.User;
 import com.company.project.sys.service.UserService;
 import com.company.project.util.MD5Util;
@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * 登陆控制器
@@ -28,24 +27,30 @@ public class LoginController {
     /**
      * 登陆
      *
-     * @param account  账号
+     * @param username 账号
      * @param password 密码
      * @return Result
      * @author libaogang
      * @since 2019-08-16 8:23
      */
     @RequestMapping("/login")
-    public Result login(String account, String password, HttpServletResponse response) {
+    public Result login(String username, String password) {
+        User user = userService.lambdaQuery().eq(User::getUsername, username).one();
+
+
+
         //校验账号密码
-        User user = userService.lambdaQuery().eq(User::getAccount, account).one();
         if (null == user || !MD5Util.encrypt(password).equals(user.getPassword())) {
             throw new BusinessException("账号或者密码错误");
         }
 
-        //登陆成功，响应头塞入token
-        String token = JwtUtil.sign(account);
-        response.setHeader("Authorization", token);
-        return ResultUtil.success();
+        //校验验证码 todo
+        if(false){
+            throw new BusinessException("验证码错误");
+        }
+
+        String token = JwtUtil.sign(username);
+        return ResultUtil.success(token);
     }
 
 

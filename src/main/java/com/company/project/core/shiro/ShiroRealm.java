@@ -40,10 +40,10 @@ public class ShiroRealm extends AuthorizingRealm {
         String token = (String) authenticationToken.getPrincipal();
 
         try {
-            // 从token中获取account
-            String account = JwtUtil.getClaim(token, JwtUtil.CLAIM_ACCOUNT);
+            // 从token中获取username
+            String username = JwtUtil.getClaim(token, JwtUtil.CLAIM_USERNAME);
             // 根据账号查询用户信息
-            User user = userService.lambdaQuery().eq(User::getAccount, account).one();
+            User user = userService.lambdaQuery().eq(User::getUsername, username).one();
             if (null == user) {
                 throw new AuthenticationException(JwtToken.TOKEN_INVALID);
             }

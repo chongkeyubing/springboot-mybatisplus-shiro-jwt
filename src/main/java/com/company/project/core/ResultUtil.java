@@ -15,7 +15,6 @@ public class ResultUtil {
     public static Result success() {
         Result result = new Result();
         result.setCode(SUCCESS_CODE);
-        result.setSuccess(true);
         result.setMessage(DEFAULT_SUCCESS_MESSAGE);
         return result;
     }
@@ -23,7 +22,6 @@ public class ResultUtil {
     public static <T> Result<T> success(T data) {
         Result<T> result = new Result<>();
         result.setCode(SUCCESS_CODE);
-        result.setSuccess(true);
         result.setMessage(DEFAULT_SUCCESS_MESSAGE);
         result.setData(data);
         return result;
@@ -32,7 +30,6 @@ public class ResultUtil {
     public static Result fail(String message) {
         Result result = new Result();
         result.setCode(FAIL_CODE);
-        result.setSuccess(false);
         result.setMessage(message);
         return result;
     }

@@ -8,7 +8,6 @@ package com.company.project.core;
  */
 public class Result<T> {
     private int code;
-    private boolean success;
     private String message;
     private T data;
 
@@ -18,14 +17,6 @@ public class Result<T> {
 
     public void setCode(int code) {
         this.code = code;
-    }
-
-    public boolean isSuccess() {
-        return success;
-    }
-
-    public void setSuccess(boolean success) {
-        this.success = success;
     }
 
     public String getMessage() {

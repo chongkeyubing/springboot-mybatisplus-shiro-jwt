@@ -27,12 +27,12 @@ public class User implements Serializable {
     /**
      * 主键
      */
-    private Long id;
+    private Long userId;
 
     /**
      * 账号
      */
-    private String account;
+    private String username;
 
     /**
      * 密码
@@ -42,22 +42,16 @@ public class User implements Serializable {
     /**
      * 姓名
      */
-    private String name;
+    private String realname;
 
     /**
-     * 年龄
+     * 状态  0：禁用  1：正常
      */
-    private Integer age;
-
-    /**
-     * 邮箱
-     */
-    private String email;
+    private Integer status;
 
     /**
      * 创建时间
      */
     private LocalDateTime createTime;
-
 
 }

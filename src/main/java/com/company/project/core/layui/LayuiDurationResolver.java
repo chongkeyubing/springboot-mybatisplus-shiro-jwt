@@ -1,9 +1,10 @@
 package com.company.project.core.layui;
 
 /**
- * @Author: libaogang
- * @Date: 2019-07-29 9:11
- * @Description layui时间段解析
+ * layui时间段解析
+ *
+ * @author : libaogang
+ * @since 2019-07-29 9:11
  */
 public class LayuiDurationResolver {
     public static String getBeginTime(String duration) {

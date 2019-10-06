@@ -32,7 +32,7 @@ public class JwtUtil {
     private static final String SECRET = "test";
 
     // 写入payload的字段名
-    public static final String CLAIM_ACCOUNT = "account";
+    public static final String CLAIM_USERNAME = "username";
 
     /**
      * 校验token是否正确
@@ -77,18 +77,18 @@ public class JwtUtil {
     /**
      * 生成token
      *
-     * @param account 用户账号，写入token payload部分
+     * @param username 用户名，写入token payload部分
      * @return java.lang.String 返回token
      * @author Wang926454
      * @since 2018/8/31 9:07
      */
-    public static String sign(String account) {
+    public static String sign(String username) {
         try {
             Date date = new Date(System.currentTimeMillis() + EXPIRE_TIME);
             Algorithm algorithm = Algorithm.HMAC256(SECRET);  //算法
             // 附带account信息
             return JWT.create()
-                    .withClaim(CLAIM_ACCOUNT, account)   //Payload 部分
+                    .withClaim(CLAIM_USERNAME, username)   //Payload 部分
                     .withExpiresAt(date)
                     .sign(algorithm);
         } catch (UnsupportedEncodingException e) {
@@ -101,7 +101,7 @@ public class JwtUtil {
         String token = sign("boss");
         System.out.println(token);
 
-        String account = getClaim(token, CLAIM_ACCOUNT);
+        String account = getClaim(token, CLAIM_USERNAME);
         System.out.println(account);
 
         System.out.println(verify(token));
