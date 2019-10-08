@@ -15,7 +15,7 @@ public class LayuiTableResultUtil extends ResultUtil {
         LayuiTableResult<T> result = new LayuiTableResult<>();
         result.setCount(count);
         result.setCode(SUCCESS_CODE);
-        result.setMessage(DEFAULT_SUCCESS_MESSAGE);
+        result.setMsg(DEFAULT_SUCCESS_MESSAGE);
         result.setData(data);
         return result;
     }

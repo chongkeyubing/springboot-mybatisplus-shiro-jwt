@@ -37,9 +37,6 @@ public class LoginController {
     public Result login(String username, String password) {
         User user = userService.lambdaQuery().eq(User::getUsername, username).one();
 
-
-
-        //校验账号密码
         if (null == user || !MD5Util.encrypt(password).equals(user.getPassword())) {
             throw new BusinessException("账号或者密码错误");
         }
@@ -49,7 +46,7 @@ public class LoginController {
             throw new BusinessException("验证码错误");
         }
 
-        String token = JwtUtil.sign(username);
+        String token = JwtUtil.sign(user.getUserId());
         return ResultUtil.success(token);
     }
 

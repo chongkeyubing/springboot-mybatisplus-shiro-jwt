@@ -1,5 +1,7 @@
 package com.company.project.sys.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -27,6 +29,7 @@ public class User implements Serializable {
     /**
      * 主键
      */
+    @TableId(type = IdType.AUTO)
     private Long userId;
 
     /**

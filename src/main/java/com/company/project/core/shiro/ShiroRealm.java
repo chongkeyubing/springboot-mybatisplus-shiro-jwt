@@ -32,18 +32,18 @@ public class ShiroRealm extends AuthorizingRealm {
     }
 
     /**
-     * 验证token
+     * 每次请求时验证token
      */
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) {
         // 前台传过来的token
         String token = (String) authenticationToken.getPrincipal();
-
         try {
-            // 从token中获取username
-            String username = JwtUtil.getClaim(token, JwtUtil.CLAIM_USERNAME);
-            // 根据账号查询用户信息
-            User user = userService.lambdaQuery().eq(User::getUsername, username).one();
+            JwtUtil.verify(token);
+
+            // 从token中获取userId
+            Long userId = Long.parseLong(JwtUtil.getClaim(token, JwtUtil.CLAIM_USER_ID));
+            User user = userService.getById(userId);
             if (null == user) {
                 throw new AuthenticationException(JwtToken.TOKEN_INVALID);
             }
@@ -51,14 +51,13 @@ public class ShiroRealm extends AuthorizingRealm {
 //            if (0 == user.getStatus()) {
 //                throw new AuthenticationException("token invalid");
 //            }
-            JwtUtil.verify(token);
-
         } catch (TokenExpiredException e) {
             throw new AuthenticationException(JwtToken.TOKEN_EXPIRED);
         } catch (Exception e) {
             throw new AuthenticationException(JwtToken.TOKEN_INVALID);
         }
         return new SimpleAuthenticationInfo(token, token, this.getName());
+
     }
 
     /**
