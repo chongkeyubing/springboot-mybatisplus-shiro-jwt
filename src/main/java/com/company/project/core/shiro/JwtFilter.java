@@ -1,5 +1,6 @@
 package com.company.project.core.shiro;
 
+import com.company.project.core.Result;
 import com.company.project.core.ResultUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.shiro.authz.UnauthorizedException;
@@ -7,7 +8,6 @@ import org.apache.shiro.web.filter.authc.BasicHttpAuthenticationFilter;
 import org.apache.shiro.web.util.WebUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -25,17 +25,17 @@ public class JwtFilter extends BasicHttpAuthenticationFilter {
 
     private Logger LOGGER = LoggerFactory.getLogger(JwtFilter.class);
 
-    public static final String AUTHORIZATION_HEADER = "Authorization";
+    private static final String AUTHORIZATION_HEADER = "Authorization";
 
     @Override
     protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) throws UnauthorizedException {
-        //判断请求的请求头是否带上 token
+        //判断请求头是否带上 token
         if (WebUtils.toHttp(request).getHeader(AUTHORIZATION_HEADER) != null) {
             try {
                 executeLogin(request, response);
                 return true;
             } catch (Exception e) {
-                responseUnauthorized(e.getMessage(),response);
+                responseUnauthorized(e.getMessage(), response);
                 return false;
             }
         }
@@ -44,7 +44,7 @@ public class JwtFilter extends BasicHttpAuthenticationFilter {
     }
 
     @Override
-    protected boolean executeLogin(ServletRequest request, ServletResponse response) throws Exception {
+    protected boolean executeLogin(ServletRequest request, ServletResponse response){
         String token = WebUtils.toHttp(request).getHeader(AUTHORIZATION_HEADER);
         JwtToken jwtToken = new JwtToken(token);
 
@@ -58,14 +58,13 @@ public class JwtFilter extends BasicHttpAuthenticationFilter {
     /**
      * 返回Unauthorized
      */
-    private void responseUnauthorized(String msg ,ServletResponse response) {
+    private void responseUnauthorized(String msg, ServletResponse response) {
         HttpServletResponse resp = WebUtils.toHttp(response);
-        resp.setStatus(HttpStatus.UNAUTHORIZED.value());
         resp.setCharacterEncoding("UTF-8");
         resp.setContentType("application/json; charset=utf-8");
         try (PrintWriter out = resp.getWriter()) {
             ObjectMapper objectMapper = new ObjectMapper();
-            String data = objectMapper.writeValueAsString(ResultUtil.fail(msg));
+            String data = objectMapper.writeValueAsString(ResultUtil.fail(Result.TOKEN_EXCEPTION, msg));
             out.write(data);
         } catch (IOException e) {
             LOGGER.error(e.getMessage(), e);

@@ -1,35 +1,31 @@
 package com.company.project.core;
 
 /**
- * ajax响应结果生成工具
+ * 响应结果生成工具
  *
  * @author libaogang
  * @since 2019-06-06 23:40
  */
 public class ResultUtil {
 
-    public static final int SUCCESS_CODE = 0;
-    public static final int FAIL_CODE = -1;
-    public static final String DEFAULT_SUCCESS_MESSAGE = "success";
-
     public static Result success() {
         Result result = new Result();
-        result.setCode(SUCCESS_CODE);
-        result.setMsg(DEFAULT_SUCCESS_MESSAGE);
+        result.setCode(Result.SUCCESS);
+        result.setMsg("success");
         return result;
     }
 
     public static <T> Result<T> success(T data) {
         Result<T> result = new Result<>();
-        result.setCode(SUCCESS_CODE);
-        result.setMsg(DEFAULT_SUCCESS_MESSAGE);
+        result.setCode(Result.SUCCESS);
+        result.setMsg("success");
         result.setData(data);
         return result;
     }
 
-    public static Result fail(String message) {
+    public static Result fail(int code, String message) {
         Result result = new Result();
-        result.setCode(FAIL_CODE);
+        result.setCode(code);
         result.setMsg(message);
         return result;
     }

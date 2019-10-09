@@ -29,6 +29,7 @@ public class UserController {
     @RequestMapping("/getUser")
     public Result getUser(@RequestParam Long userId){
         User user = userService.getById(userId);
+
         return ResultUtil.success(user);
     }
 

@@ -3,9 +3,7 @@ package com.company.project.core;
 import org.apache.shiro.authz.UnauthorizedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.servlet.http.HttpServletRequest;
@@ -26,22 +24,20 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = BusinessException.class)
     public Result serviceException(HttpServletRequest request, Exception e, HttpServletResponse response) {
         LOGGER.error("业务异常：{}", e.getMessage());
-        return ResultUtil.fail(e.getMessage());
+        return ResultUtil.fail(Result.BUSINESS_EXCEPTION, e.getMessage());
     }
 
     //shiro
-    @ResponseStatus(value = HttpStatus.FORBIDDEN)
     @ExceptionHandler(value = UnauthorizedException.class)
     public Result unauthorizedException(HttpServletRequest request, Exception e, HttpServletResponse response) {
-        return ResultUtil.fail("无权访问");
+        return ResultUtil.fail(Result.UNAUTHORIZED,"无权访问");
     }
 
     //其他异常
     @ExceptionHandler(value = Exception.class)
     public Result exception(HttpServletRequest request, Exception e, HttpServletResponse response) {
         LOGGER.error("接口 [" + request.getRequestURI() + "] 内部错误：" + e.getMessage(), e);
-        return ResultUtil.fail("接口 [" + request.getRequestURI() + "] 内部错误：" + e.getMessage());
-
+        return ResultUtil.fail(Result.INNER_ERROR, "接口 [" + request.getRequestURI() + "] 内部错误：" + e.getMessage());
     }
 
 }
