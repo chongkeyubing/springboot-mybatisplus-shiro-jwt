@@ -4,18 +4,12 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.company.project.sys.entity.User">
-        <id column="id" property="id" />
-        <result column="account" property="account" />
-        <result column="password" property="password" />
-        <result column="name" property="name" />
-        <result column="age" property="age" />
-        <result column="email" property="email" />
-        <result column="create_time" property="createTime" />
+        <id column="userId" property="userId"/>
+        <result column="password" property="password"/>
+        <result column="username" property="username"/>
+        <result column="realname" property="realname"/>
+        <result column="status" property="status"/>
+        <result column="create_time" property="createTime"/>
     </resultMap>
-
-    <!-- 通用查询结果列 -->
-    <sql id="Base_Column_List">
-        id, account, password, name, age, email, create_time
-    </sql>
 
 </mapper>

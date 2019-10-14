@@ -24,6 +24,7 @@ import javax.annotation.Resource;
 public class UserController {
 
     @Resource
+
     UserService userService;
 
     @RequestMapping("/getUser")

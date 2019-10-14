@@ -3,6 +3,7 @@ package com.company.project.core;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,8 +15,6 @@ import java.util.Date;
  * JWT工具类
  * <p>jwt组成：Header(头部).Payload(载荷).Signature(签名)</p>
  * <p>算法：base64enc({"alg":"HS256","typ":"JWT"}).base64enc({"account":"libaogang","exp":"1441594722"}).HMACSHA256(base64enc(header)+"."+base64enc(header),secret)</p>
- * <p>jwt串：eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1NjU5MTI1MjYsImFjY291bnQiOiJsaWJhb2dhbmcifQ.qzVl_-5okCyWyarE5tbSYFXe7dcnasLU9JoKXwhYug0</p>
- * </p>
  *
  * @author libaogang
  * @since 2019-08-15 21:18
@@ -24,13 +23,18 @@ public class JwtUtil {
     private static final Logger LOGGER = LoggerFactory.getLogger(JwtUtil.class);
 
     // 过期时间30分钟
-    private static final long EXPIRE_TIME = 30 * 60 * 1000;
+    private static final long EXPIRE_TIME = 30 * 1000;
+
+    // 免登录时间一周
+    public static final long REFRESH_TIME = 7 * 24 * 60 * 60 * 1000;
 
     // 签名密钥
     private static final String SECRET = "test";
 
     // 写入payload的字段名
     public static final String CLAIM_USER_ID = "userId";
+
+    public static final String CLAIM_REFRESH = "refresh";
 
     /**
      * 校验token(包括是否过期)
@@ -62,10 +66,10 @@ public class JwtUtil {
      * @author libaogang
      * @since 2019-08-15 21:25
      */
-    public static String getClaim(String token, String claim) {
+    public static Claim getClaim(String token, String claim) {
         try {
             DecodedJWT jwt = JWT.decode(token);
-            return jwt.getClaim(claim).asString();
+            return jwt.getClaim(claim);
         } catch (Exception e) {
             LOGGER.error("解码token中的公共信息异常:" + e.getMessage(), e);
             throw new BusinessException("解码token中的公共信息异常:" + e.getMessage());
@@ -82,11 +86,12 @@ public class JwtUtil {
      */
     public static String sign(Long userId) {
         try {
-            Date date = new Date(System.currentTimeMillis() + EXPIRE_TIME);
+            Date expire = new Date(System.currentTimeMillis() + EXPIRE_TIME);
+            Date refresh = new Date(System.currentTimeMillis() + REFRESH_TIME);
             Algorithm algorithm = Algorithm.HMAC256(SECRET);  //算法
             return JWT.create()
-                    .withClaim(CLAIM_USER_ID, userId.toString())   //Payload 部分
-                    .withExpiresAt(date)
+                    .withClaim(CLAIM_USER_ID, userId)   //Payload 部分
+                    .withExpiresAt(expire)
                     .sign(algorithm);
         } catch (UnsupportedEncodingException e) {
             LOGGER.error("不支持secret的编码类型:" + e.getMessage(), e);
@@ -98,7 +103,7 @@ public class JwtUtil {
         String token = sign(1L);
         System.out.println(token);
 
-        Long userId =  Long.parseLong(getClaim(token, CLAIM_USER_ID));
+        Long userId =  getClaim(token, CLAIM_USER_ID).asLong();
         System.out.println(userId);
 
         System.out.println(verify(token));
