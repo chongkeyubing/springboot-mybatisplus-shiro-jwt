@@ -3,8 +3,8 @@ package com.company.project.core.shiro;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.impl.PublicClaims;
 import com.company.project.core.JwtUtil;
-import com.company.project.sys.entity.User;
-import com.company.project.sys.service.UserService;
+import com.company.project.modules.sys.entity.User;
+import com.company.project.modules.sys.service.UserService;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
@@ -19,8 +19,10 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 
+
+
 /**
- * shiro自定义realm
+ * 自定义realm
  */
 public class ShiroRealm extends AuthorizingRealm {
 

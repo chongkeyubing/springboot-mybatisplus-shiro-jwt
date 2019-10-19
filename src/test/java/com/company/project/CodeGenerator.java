@@ -9,8 +9,9 @@ import com.baomidou.mybatisplus.generator.config.po.TableInfo;
 import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
 import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * MybatisPlus代码生成器
@@ -25,12 +26,12 @@ public class CodeGenerator {
     private static final String JDBC_PASSWORD = "root";
     private static final String JDBC_DIVER_CLASS_NAME = "com.mysql.cj.jdbc.Driver";
 
-    private static final String BASE_PACKAGE = "com.company.project";
+    private static final String BASE_PACKAGE = "com.company.project.modules";
     private static final String AUTHOR = "libaogang"; //作者
 
     private static final boolean OVERRIDE = true; //是否覆盖已生成文件
     private static final String MODULE_NAME = "sys";  //模块名
-    private static final String TABLE_PREFIX = "sys_";  //表前缀
+    private static final String TABLE_PREFIX = "sys_";  //表前缀，生成的实体类会去掉前缀
     private static final String TABLE_NAME = "sys_user";  //表名,多张表用英文逗号隔开。
 
     public static void main(String[] args) {
@@ -38,100 +39,88 @@ public class CodeGenerator {
     }
 
     private static void generate() {
-        // 代码生成器
-        AutoGenerator autoGenerator = new AutoGenerator();
-
-        // 全局配置
-        GlobalConfig gc = new GlobalConfig();
-        String projectPath = System.getProperty("user.dir");
-        gc.setOutputDir(projectPath + "/src/main/java");
-        gc.setAuthor(AUTHOR);
-        gc.setOpen(false);
-        gc.setFileOverride(OVERRIDE); //是否覆盖已生成的文件
-        gc.setBaseResultMap(true); //mapper.xml中添加baseResultMap
-        gc.setBaseColumnList(true); //mapper.xml中添加baseColumList
-        gc.setServiceName("%sService");  //默认生成的service接口名有I前缀，去掉I前缀。%s为对应实体名
-        // gc.setSwagger2(true); 实体属性 Swagger2 注解
-        autoGenerator.setGlobalConfig(gc);
-
-        // 策略配置
-        StrategyConfig strategy = new StrategyConfig();
-        strategy.setNaming(NamingStrategy.underline_to_camel);
-        strategy.setColumnNaming(NamingStrategy.underline_to_camel);
-        strategy.setEntityLombokModel(true);
-        strategy.setRestControllerStyle(true);
-        //strategy.setSuperControllerClass("com.baomidou.ant.common.BaseController"); //父controller
-        //strategy.setSuperEntityClass("com.baomidou.ant.common.BaseEntity");//父entity
-        //strategy.setSuperEntityColumns("id"); // 写于父类中的公共字段
-
-        strategy.setInclude(TABLE_NAME.split(","));
-        strategy.setControllerMappingHyphenStyle(true);  //驼峰转连字符
-        strategy.setTablePrefix(TABLE_PREFIX);  //表前缀，生成的文件将去掉前缀
-        autoGenerator.setStrategy(strategy);
 
         // 数据源配置
-        DataSourceConfig dsc = new DataSourceConfig();
-        dsc.setUrl(JDBC_URL);
-        // dsc.setSchemaName("public");
-        dsc.setDriverName(JDBC_DIVER_CLASS_NAME);
-        dsc.setUsername(JDBC_USERNAME);
-        dsc.setPassword(JDBC_PASSWORD);
-        autoGenerator.setDataSource(dsc);
+        DataSourceConfig dataSourceConfig = new DataSourceConfig()
+                .setUrl(JDBC_URL)
+                .setDriverName(JDBC_DIVER_CLASS_NAME)
+                .setUsername(JDBC_USERNAME)
+                .setPassword(JDBC_PASSWORD);
 
-        // 包配置
-        PackageConfig pc = new PackageConfig();
-        if (StringUtils.isNotEmpty(MODULE_NAME)) {
-            pc.setModuleName(MODULE_NAME);
-        }
-        pc.setParent(BASE_PACKAGE);
-        autoGenerator.setPackageInfo(pc);
+        //1. 全局配置
+        GlobalConfig globalConfig = new GlobalConfig()
+                .setOutputDir(System.getProperty("user.dir") + "/src/main/java")
+                .setOpen(false)
+                .setAuthor(AUTHOR)
+                .setFileOverride(OVERRIDE)  //是否覆盖已生成的文件
+                .setBaseResultMap(true) //mapper.xml中添加baseResultMap
+                .setBaseColumnList(true) //mapper.xml中添加baseColumList
+                .setServiceName("%sService");  //默认生成的service接口名有I前缀，去掉I前缀。%s为对应实体名
+                 //.setSwagger2(true)  // 实体属性 Swagger2 注解
 
-        // 自定义配置
-        InjectionConfig cfg = new InjectionConfig() {
+
+        //2. 策略配置
+        StrategyConfig strategyConfig = new StrategyConfig().setNaming(NamingStrategy.underline_to_camel)
+                .setColumnNaming(NamingStrategy.underline_to_camel)
+                .setEntityLombokModel(true)
+                .setRestControllerStyle(true)
+                .setInclude(TABLE_NAME.split(","))
+                .setControllerMappingHyphenStyle(true)  //驼峰转连字符
+                .setTablePrefix(TABLE_PREFIX);  //表前缀，生成的文件将去掉前缀
+                //.setSuperControllerClass("com.baomidou.ant.common.BaseController") //父controller
+                //.setSuperEntityClass("com.baomidou.ant.common.BaseEntity") //父entity
+                //.setSuperEntityColumns("id") // 写于父类中的公共字段;
+
+        //3. 包配置
+        PackageConfig packageConfig = new PackageConfig()
+                .setParent(BASE_PACKAGE)  //基础包路径
+                .setModuleName(StringUtils.isNotEmpty(MODULE_NAME) ? MODULE_NAME : null);  //模块名
+
+        //4. 模板引擎
+        FreemarkerTemplateEngine freemarkerTemplateEngine = new FreemarkerTemplateEngine();
+
+        //5. 自定义模板文件
+        TemplateConfig templateConfig = new TemplateConfig()
+                .setXml(null);
+                // .setController("...");    //自定义模板文件
+                // .setEntity("...");
+                // .setMapper("...");
+                // .setXml("...");
+                // .setService("...");
+                // .setServiceImpl("...");
+
+        //6. 模板自定义属性注入，自定义输出文件
+        InjectionConfig injectionConfig = new InjectionConfig() {
+            //自定义属性注入:abc
+            //在.ftl(或者是.vm)模板中，通过${cfg.abc}获取属性
             @Override
             public void initMap() {
-                // to do nothing
+                Map<String, Object> map = new HashMap<>();
+                map.put("abc", "");
+                this.setMap(map);
             }
-        };
+        }.setFileOutConfigList(
+                Arrays.asList(
+                        new FileOutConfig("/templates/mapper.xml.ftl") {  //该mapper模板文件位于mybatis-plus-generator jar包中
+                            @Override
+                            public String outputFile(TableInfo tableInfo) {
+                                // 自定义输出文件名 ， 如果你 Entity 设置了前后缀、此处注意 xml 的名称会跟着发生变化！！
+                                return System.getProperty("user.dir") + "/src/main/resources/mapper/" + MODULE_NAME
+                                        + "/" + tableInfo.getEntityName() + "Mapper" + StringPool.DOT_XML;
+                            }
+                        }
+                )
+        );
 
-        //该模板文件位于mybatis-plus-generator jar包中
-        String templatePath = "/templates/mapper.xml.ftl";
-
-        // 自定义输出配置
-        List<FileOutConfig> focList = new ArrayList<>();
-        focList.add(new FileOutConfig(templatePath) {
-            @Override
-            public String outputFile(TableInfo tableInfo) {
-                // 自定义输出文件名 ， 如果你 Entity 设置了前后缀、此处注意 xml 的名称会跟着发生变化！！
-                return projectPath + "/src/main/resources/mapper/" + MODULE_NAME
-                        + "/" + tableInfo.getEntityName() + "Mapper" + StringPool.DOT_XML;
-            }
-        });
-        /*
-        cfg.setFileCreate(new IFileCreate() {
-            @Override
-            public boolean isCreate(ConfigBuilder configBuilder, FileType fileType, String filePath) {
-                // 判断自定义文件夹是否需要创建
-                checkDir("调用默认方法创建的目录");
-                return false;
-            }
-        });
-        */
-        cfg.setFileOutConfigList(focList);
-        autoGenerator.setCfg(cfg);
-
-        // 配置模板
-        TemplateConfig templateConfig = new TemplateConfig();
-
-        // 配置自定义输出模板
-        // 指定自定义模板路径，注意不要带上.ftl/.vm, 会根据使用的模板引擎自动识别
-        // templateConfig.setEntity("templates/entity2.java");
-        // templateConfig.setService();
-        // templateConfig.setController();
-
-        templateConfig.setXml(null);
-        autoGenerator.setTemplate(templateConfig);
-        autoGenerator.setTemplateEngine(new FreemarkerTemplateEngine());
-        autoGenerator.execute();
+        // 整合配置，生成文件
+        new AutoGenerator()
+                .setDataSource(dataSourceConfig)
+                .setGlobalConfig(globalConfig)
+                .setPackageInfo(packageConfig)
+                .setStrategy(strategyConfig)
+                .setTemplateEngine(freemarkerTemplateEngine)
+                .setTemplate(templateConfig)
+                .setCfg(injectionConfig)
+                .execute();
     }
 }

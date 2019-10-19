@@ -33,7 +33,7 @@ public class GlobalExceptionHandler {
         return ResultUtil.fail(Result.UNAUTHORIZED,"无权访问");
     }
 
-    //其他异常
+    //内部错误
     @ExceptionHandler(value = Exception.class)
     public Result exception(HttpServletRequest request, Exception e, HttpServletResponse response) {
         LOGGER.error("接口 [" + request.getRequestURI() + "] 内部错误：" + e.getMessage(), e);

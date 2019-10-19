@@ -1,11 +1,11 @@
-package com.company.project.sys.controller;
+package com.company.project.modules.sys.controller;
 
 import com.company.project.core.BusinessException;
 import com.company.project.core.JwtUtil;
 import com.company.project.core.Result;
 import com.company.project.core.ResultUtil;
-import com.company.project.sys.entity.User;
-import com.company.project.sys.service.UserService;
+import com.company.project.modules.sys.entity.User;
+import com.company.project.modules.sys.service.UserService;
 import com.company.project.util.MD5Util;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

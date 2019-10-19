@@ -34,8 +34,6 @@ public class JwtUtil {
     // 写入payload的字段名
     public static final String CLAIM_USER_ID = "userId";
 
-    public static final String CLAIM_REFRESH = "refresh";
-
     /**
      * 校验token(包括是否过期)
      *
@@ -87,7 +85,6 @@ public class JwtUtil {
     public static String sign(Long userId) {
         try {
             Date expire = new Date(System.currentTimeMillis() + EXPIRE_TIME);
-            Date refresh = new Date(System.currentTimeMillis() + REFRESH_TIME);
             Algorithm algorithm = Algorithm.HMAC256(SECRET);  //算法
             return JWT.create()
                     .withClaim(CLAIM_USER_ID, userId)   //Payload 部分
@@ -100,7 +97,7 @@ public class JwtUtil {
     }
 
     public static void main(String[] args) {
-        String token = sign(1L);
+        String token = sign(0L);
         System.out.println(token);
 
         Long userId =  getClaim(token, CLAIM_USER_ID).asLong();
