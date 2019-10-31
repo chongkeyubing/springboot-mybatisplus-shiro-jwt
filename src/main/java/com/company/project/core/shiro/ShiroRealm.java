@@ -2,9 +2,12 @@ package com.company.project.core.shiro;
 
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.impl.PublicClaims;
+import com.auth0.jwt.interfaces.Claim;
+import com.company.project.core.Constant;
 import com.company.project.core.JwtUtil;
 import com.company.project.modules.sys.entity.User;
 import com.company.project.modules.sys.service.UserService;
+import com.company.project.util.WebContextUtil;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
@@ -13,12 +16,11 @@ import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
+import java.util.Map;
 
 
 /**
@@ -44,9 +46,13 @@ public class ShiroRealm extends AuthorizingRealm {
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) {
         // 前台传过来的token
         String token = (String) authenticationToken.getPrincipal();
-        Long userId = JwtUtil.getClaim(token, JwtUtil.CLAIM_USER_ID).asLong();
+
         try {
             JwtUtil.verify(token);
+
+            Map<String, Claim> claims = JwtUtil.getClaims(token);
+            Long userId = claims.get(Constant.USER_ID).asLong();
+            String realname = claims.get(Constant.REALNAME).asString();
 
             User user = userService.getById(userId);
             if (null == user) {
@@ -56,13 +62,20 @@ public class ShiroRealm extends AuthorizingRealm {
 //            if (0 == user.getStatus()) {
 //                throw new AuthenticationException("token invalid");
 //            }
+
+            putUserInfoToRequest(userId, realname);
         } catch (TokenExpiredException e) {
             // 如果在免登录时间内，则续签token
             long expire = JwtUtil.getClaim(token, PublicClaims.EXPIRES_AT).asLong() * 1000;
-            if (System.currentTimeMillis() - expire  < JwtUtil.REFRESH_TIME) {
-                HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
+            if (System.currentTimeMillis() - expire < JwtUtil.REFRESH_TIME) {
+                Map<String, Claim> claims = JwtUtil.getClaims(token);
+                Long userId = claims.get(Constant.USER_ID).asLong();
+                String realname = claims.get(Constant.REALNAME).asString();
+                putUserInfoToRequest(userId, realname);
+
+                HttpServletResponse response = WebContextUtil.getResponse();
                 response.setHeader("refreshToken", "true");
-                response.setHeader(JwtFilter.AUTHORIZATION_HEADER, JwtUtil.sign(userId));
+                response.setHeader(JwtFilter.AUTHORIZATION_HEADER, JwtUtil.sign(userId, realname));
             } else {
                 throw new AuthenticationException(JwtToken.TOKEN_EXPIRED);
             }
@@ -90,5 +103,19 @@ public class ShiroRealm extends AuthorizingRealm {
 //        authorizationInfo.setStringPermissions(new HashSet<>(permissions));
 
         return authorizationInfo;
+    }
+
+    /**
+     * 将用户id和真实姓名存入request中，方便后续直接获取，避免频繁解密token
+     *
+     * @param userId   用户id
+     * @param realname 真实姓名
+     * @author libaogang
+     * @since 2019-10-31 22:58:43
+     */
+    private void putUserInfoToRequest(Long userId, String realname) {
+        HttpServletRequest httpServletRequest = WebContextUtil.getRequest();
+        httpServletRequest.setAttribute(Constant.USER_ID, userId);
+        httpServletRequest.setAttribute(Constant.REALNAME, realname);
     }
 }

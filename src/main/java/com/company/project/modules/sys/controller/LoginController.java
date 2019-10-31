@@ -8,8 +8,8 @@ import com.company.project.modules.sys.entity.User;
 import com.company.project.modules.sys.service.UserService;
 import com.company.project.util.MD5Util;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 import javax.annotation.Resource;
 
 /**
@@ -34,19 +34,21 @@ public class LoginController {
      * @since 2019-08-16 8:23
      */
     @RequestMapping("/login")
-    public Result login(String username, String password) {
-        User user = userService.lambdaQuery().eq(User::getUsername, username).one();
+    public Result login(@RequestParam String username, @RequestParam String password) {
+        User user = userService.lambdaQuery()
+                .select(User::getUserId,User::getRealname,User::getPassword)
+                .eq(User::getUsername, username).one();
 
         if (null == user || !MD5Util.encrypt(password).equals(user.getPassword())) {
             throw new BusinessException("账号或者密码错误");
         }
 
-        //校验验证码 todo
-        if(false){
-            throw new BusinessException("验证码错误");
-        }
+//        //校验验证码 todo
+//        if (false) {
+//            throw new BusinessException("验证码错误");
+//        }
 
-        String token = JwtUtil.sign(user.getUserId());
+        String token = JwtUtil.sign(user.getUserId(),user.getRealname());
         return ResultUtil.success(token);
     }
 

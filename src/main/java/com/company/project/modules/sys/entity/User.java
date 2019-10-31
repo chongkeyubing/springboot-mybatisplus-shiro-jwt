@@ -1,13 +1,12 @@
 package com.company.project.modules.sys.entity;
 
-import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import java.time.LocalDateTime;
-import java.io.Serializable;
+import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+
+import java.io.Serializable;
+import java.util.Date;
 
 /**
  * <p>
@@ -44,17 +43,37 @@ public class User implements Serializable {
     /**
      * 密码
      */
+    @TableField(select = false)
     private String password;
 
     /**
      * 状态  0：禁用   1：正常
      */
-    private Boolean status;
+    private Integer status;
 
     /**
      * 创建时间
      */
-    private LocalDateTime createTime;
+    private Date createTime;
 
+    /**
+     * 创建人ID
+     */
+    @TableField(fill = FieldFill.INSERT)
+    private Long createUserId;
+    /**
+     * 更新时间
+     */
+    private Date updateTime;
+
+    /**
+     * 更新人ID
+     */
+    @TableField(fill = FieldFill.UPDATE)
+    private Long updateUserId;
+
+    @TableLogic
+    @TableField(select = false)
+    private Integer isDeleted;
 
 }

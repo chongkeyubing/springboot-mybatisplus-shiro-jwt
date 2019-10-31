@@ -1,9 +1,15 @@
 package com.company.project.modules.sys.controller;
 
-
+import com.company.project.core.Result;
+import com.company.project.core.ResultUtil;
+import com.company.project.modules.sys.entity.User;
+import com.company.project.modules.sys.service.UserService;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.annotation.Resource;
 
 /**
  * <p>
@@ -17,4 +23,24 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/sys/user")
 public class UserController {
 
+    @Resource
+    private UserService userService;
+
+    @RequestMapping("/getUserById")
+    public Result getUserById(@RequestParam Long userId) {
+        User user = userService.getById(userId);
+        return ResultUtil.success(user);
+    }
+
+    @RequestMapping("/save")
+    public Result save(@RequestBody User user) {
+        userService.save(user);
+        return ResultUtil.success();
+    }
+
+    @RequestMapping("/update")
+    public Result update(@RequestBody User user){
+        userService.updateById(user);
+        return ResultUtil.success();
+    }
 }

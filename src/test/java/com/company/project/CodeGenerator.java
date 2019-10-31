@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.generator.AutoGenerator;
 import com.baomidou.mybatisplus.generator.InjectionConfig;
 import com.baomidou.mybatisplus.generator.config.*;
 import com.baomidou.mybatisplus.generator.config.po.TableInfo;
+import com.baomidou.mybatisplus.generator.config.rules.DateType;
 import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
 import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
 
@@ -32,7 +33,7 @@ public class CodeGenerator {
     private static final boolean OVERRIDE = true; //是否覆盖已生成文件
     private static final String MODULE_NAME = "sys";  //模块名
     private static final String TABLE_PREFIX = "sys_";  //表前缀，生成的实体类会去掉前缀
-    private static final String TABLE_NAME = "sys_user";  //表名,多张表用英文逗号隔开。
+    private static final String TABLE_NAME = "sys_menu";  //表名,多张表用英文逗号隔开。
 
     public static void main(String[] args) {
         generate();
@@ -53,6 +54,7 @@ public class CodeGenerator {
                 .setOpen(false)
                 .setAuthor(AUTHOR)
                 .setFileOverride(OVERRIDE)  //是否覆盖已生成的文件
+                .setDateType(DateType.ONLY_DATE)  // 时间类型使用 java.util.date
                 .setBaseResultMap(true) //mapper.xml中添加baseResultMap
                 .setBaseColumnList(true) //mapper.xml中添加baseColumList
                 .setServiceName("%sService");  //默认生成的service接口名有I前缀，去掉I前缀。%s为对应实体名
@@ -60,16 +62,20 @@ public class CodeGenerator {
 
 
         //2. 策略配置
-        StrategyConfig strategyConfig = new StrategyConfig().setNaming(NamingStrategy.underline_to_camel)
+        StrategyConfig strategyConfig = new StrategyConfig()
+                .setNaming(NamingStrategy.underline_to_camel)
                 .setColumnNaming(NamingStrategy.underline_to_camel)
                 .setEntityLombokModel(true)
                 .setRestControllerStyle(true)
                 .setInclude(TABLE_NAME.split(","))
                 .setControllerMappingHyphenStyle(true)  //驼峰转连字符
-                .setTablePrefix(TABLE_PREFIX);  //表前缀，生成的文件将去掉前缀
+                .setTablePrefix(TABLE_PREFIX)  //表前缀，生成的文件将去掉前缀
                 //.setSuperControllerClass("com.baomidou.ant.common.BaseController") //父controller
                 //.setSuperEntityClass("com.baomidou.ant.common.BaseEntity") //父entity
                 //.setSuperEntityColumns("id") // 写于父类中的公共字段;
+                .setLogicDeleteFieldName("is_deleted");   //逻辑删除属性名
+//                .setTableFillList();
+
 
         //3. 包配置
         PackageConfig packageConfig = new PackageConfig()
@@ -112,7 +118,7 @@ public class CodeGenerator {
                 )
         );
 
-        // 整合配置，生成文件
+        // 整合配置，生成代码
         new AutoGenerator()
                 .setDataSource(dataSourceConfig)
                 .setGlobalConfig(globalConfig)

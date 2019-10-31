@@ -18,10 +18,10 @@ mybatis-plus:
     db-config:
       id-type: auto
 
-logging:
-  level:
-    root: info
-    com.company.project.**.mapper: trace  # mybatis-plus很多日志都是这个级别
-  pattern:
-    console: '%p%m%n' #p:级别 m:内容 n:换行
+#logging:
+#  level:
+#    root: info
+#    com.company.project.**.mapper: trace  # mybatis-plus很多日志都是这个级别
+#  pattern:
+#    console: '%p%m%n' #p:级别 m:内容 n:换行
 
