@@ -1,10 +1,12 @@
 package com.company.project;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.generator.AutoGenerator;
 import com.baomidou.mybatisplus.generator.InjectionConfig;
 import com.baomidou.mybatisplus.generator.config.*;
+import com.baomidou.mybatisplus.generator.config.po.TableFill;
 import com.baomidou.mybatisplus.generator.config.po.TableInfo;
 import com.baomidou.mybatisplus.generator.config.rules.DateType;
 import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
@@ -33,7 +35,7 @@ public class CodeGenerator {
     private static final boolean OVERRIDE = true; //是否覆盖已生成文件
     private static final String MODULE_NAME = "sys";  //模块名
     private static final String TABLE_PREFIX = "sys_";  //表前缀，生成的实体类会去掉前缀
-    private static final String TABLE_NAME = "sys_menu";  //表名,多张表用英文逗号隔开。
+    private static final String TABLE_NAME = "sys_role";  //表名,多张表用英文逗号隔开。
 
     public static void main(String[] args) {
         generate();
@@ -58,7 +60,7 @@ public class CodeGenerator {
                 .setBaseResultMap(true) //mapper.xml中添加baseResultMap
                 .setBaseColumnList(true) //mapper.xml中添加baseColumList
                 .setServiceName("%sService");  //默认生成的service接口名有I前缀，去掉I前缀。%s为对应实体名
-                 //.setSwagger2(true)  // 实体属性 Swagger2 注解
+        //.setSwagger2(true)  // 实体属性 Swagger2 注解
 
 
         //2. 策略配置
@@ -73,8 +75,11 @@ public class CodeGenerator {
                 //.setSuperControllerClass("com.baomidou.ant.common.BaseController") //父controller
                 //.setSuperEntityClass("com.baomidou.ant.common.BaseEntity") //父entity
                 //.setSuperEntityColumns("id") // 写于父类中的公共字段;
-                .setLogicDeleteFieldName("is_deleted");   //逻辑删除属性名
-//                .setTableFillList();
+                .setLogicDeleteFieldName("is_deleted")   //逻辑删除属性名
+                .setTableFillList(Arrays.asList(  // 自动填充字段
+                        new TableFill("create_user_id", FieldFill.INSERT),
+                        new TableFill("update_user_id", FieldFill.UPDATE)
+                ));
 
 
         //3. 包配置
@@ -88,12 +93,12 @@ public class CodeGenerator {
         //5. 自定义模板文件
         TemplateConfig templateConfig = new TemplateConfig()
                 .setXml(null);
-                // .setController("...");    //自定义模板文件
-                // .setEntity("...");
-                // .setMapper("...");
-                // .setXml("...");
-                // .setService("...");
-                // .setServiceImpl("...");
+        // .setController("...");    //自定义模板文件
+        // .setEntity("...");
+        // .setMapper("...");
+        // .setXml("...");
+        // .setService("...");
+        // .setServiceImpl("...");
 
         //6. 模板自定义属性注入，自定义输出文件
         InjectionConfig injectionConfig = new InjectionConfig() {
