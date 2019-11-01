@@ -81,7 +81,6 @@ public class CodeGenerator {
                         new TableFill("update_user_id", FieldFill.UPDATE)
                 ));
 
-
         //3. 包配置
         PackageConfig packageConfig = new PackageConfig()
                 .setParent(BASE_PACKAGE)  //基础包路径
