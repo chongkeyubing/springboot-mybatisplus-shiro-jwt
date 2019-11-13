@@ -35,13 +35,12 @@ public class CodeGenerator {
     private static final boolean OVERRIDE = true; //是否覆盖已生成文件
     private static final String MODULE_NAME = "sys";  //模块名
     private static final String TABLE_PREFIX = "sys_";  //表前缀，生成的实体类会去掉前缀
-    private static final String TABLE_NAME = "sys_role";  //表名,多张表用英文逗号隔开。
 
     public static void main(String[] args) {
-        generate();
+        generate("sys_menu");  //支持多表
     }
 
-    private static void generate() {
+    private static void generate(String... tableName) {
 
         // 数据源配置
         DataSourceConfig dataSourceConfig = new DataSourceConfig()
@@ -59,7 +58,8 @@ public class CodeGenerator {
                 .setDateType(DateType.ONLY_DATE)  // 时间类型使用 java.util.date
                 .setBaseResultMap(true) //mapper.xml中添加baseResultMap
                 .setBaseColumnList(true) //mapper.xml中添加baseColumList
-                .setServiceName("%sService");  //默认生成的service接口名有I前缀，去掉I前缀。%s为对应实体名
+                .setServiceName("%sService")  //默认生成的service接口名有I前缀，去掉I前缀。%s为对应实体名
+                .setEntityName("%sEntity");
         //.setSwagger2(true)  // 实体属性 Swagger2 注解
 
 
@@ -69,7 +69,7 @@ public class CodeGenerator {
                 .setColumnNaming(NamingStrategy.underline_to_camel)
                 .setEntityLombokModel(true)
                 .setRestControllerStyle(true)
-                .setInclude(TABLE_NAME.split(","))
+                .setInclude(tableName)
                 .setControllerMappingHyphenStyle(true)  //驼峰转连字符
                 .setTablePrefix(TABLE_PREFIX)  //表前缀，生成的文件将去掉前缀
                 //.setSuperControllerClass("com.baomidou.ant.common.BaseController") //父controller
@@ -115,8 +115,11 @@ public class CodeGenerator {
                             @Override
                             public String outputFile(TableInfo tableInfo) {
                                 // 自定义输出文件名 ， 如果你 Entity 设置了前后缀、此处注意 xml 的名称会跟着发生变化！！
-                                return System.getProperty("user.dir") + "/src/main/resources/mapper/" + MODULE_NAME
-                                        + "/" + tableInfo.getEntityName() + "Mapper" + StringPool.DOT_XML;
+//                                return System.getProperty("user.dir") + "/src/main/resources/mapper/" + MODULE_NAME
+//                                        + "/" + tableInfo.getEntityName() + "Mapper" + StringPool.DOT_XML;
+                                return System.getProperty("user.dir") + "/src/main/java/" + BASE_PACKAGE.replace(".", "/")
+                                        + "/" + MODULE_NAME + "/mapper/" + tableInfo.getEntityName().replace("Entity", "")
+                                        + "Mapper" + StringPool.DOT_XML;
                             }
                         }
                 )

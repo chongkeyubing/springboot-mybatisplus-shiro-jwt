@@ -14,13 +14,13 @@ import lombok.experimental.Accessors;
  * </p>
  *
  * @author libaogang
- * @since 2019-10-31
+ * @since 2019-11-12
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
 @TableName("sys_menu")
-public class Menu implements Serializable {
+public class MenuEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

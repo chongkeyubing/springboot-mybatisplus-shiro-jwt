@@ -11,10 +11,10 @@ import org.springframework.web.bind.annotation.RestController;
  * </p>
  *
  * @author libaogang
- * @since 2019-10-31
+ * @since 2019-11-12
  */
 @RestController
-@RequestMapping("/sys/menu")
+@RequestMapping("/sys/menu-entity")
 public class MenuController {
 
 }

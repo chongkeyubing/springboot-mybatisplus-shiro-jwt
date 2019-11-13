@@ -1,6 +1,6 @@
 package com.company.project.modules.sys.mapper;
 
-import com.company.project.modules.sys.entity.User;
+import com.company.project.modules.sys.entity.UserEntity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
@@ -11,6 +11,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * @author libaogang
  * @since 2019-10-17
  */
-public interface UserMapper extends BaseMapper<User> {
+public interface UserMapper extends BaseMapper<UserEntity> {
 
 }

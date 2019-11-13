@@ -1,6 +1,6 @@
 package com.company.project.modules.sys.mapper;
 
-import com.company.project.modules.sys.entity.Role;
+import com.company.project.modules.sys.entity.RoleEntity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
@@ -9,8 +9,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * </p>
  *
  * @author libaogang
- * @since 2019-11-01
+ * @since 2019-11-12
  */
-public interface RoleMapper extends BaseMapper<Role> {
+public interface RoleMapper extends BaseMapper<RoleEntity> {
 
 }

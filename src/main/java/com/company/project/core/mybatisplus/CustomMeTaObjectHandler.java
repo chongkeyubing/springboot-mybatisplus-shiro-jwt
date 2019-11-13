@@ -13,13 +13,10 @@ import org.springframework.stereotype.Component;
  * @since 2019-10-31-22:00
  */
 @Component
-public class MyMeTaObjectHandler implements MetaObjectHandler {
+public class CustomMeTaObjectHandler implements MetaObjectHandler {
 
     @Override
     public void insertFill(MetaObject metaObject) {
-//        if(metaObject.hasSetter("createTime")){
-//            setInsertFieldValByName("createTime",new Date() ,metaObject);
-//        }
         if (metaObject.hasSetter("createUserId")) {
             Long userId = (Long) WebContextUtil.getRequest().getAttribute(Constant.USER_ID);
             setInsertFieldValByName("createUserId", userId, metaObject);
@@ -33,9 +30,6 @@ public class MyMeTaObjectHandler implements MetaObjectHandler {
 
     @Override
     public void updateFill(MetaObject metaObject) {
-//        if (metaObject.hasSetter("updateTime")) {
-//            setUpdateFieldValByName("updateTime", new Date(), metaObject);
-//        }
         if (metaObject.hasSetter("updateUserId")) {
             Long userId = (Long) WebContextUtil.getRequest().getAttribute(Constant.USER_ID);
             setUpdateFieldValByName("updateUserId", userId, metaObject);

@@ -11,10 +11,10 @@ import org.springframework.web.bind.annotation.RestController;
  * </p>
  *
  * @author libaogang
- * @since 2019-11-01
+ * @since 2019-11-12
  */
 @RestController
-@RequestMapping("/sys/role")
+@RequestMapping("/sys/role-entity")
 public class RoleController {
 
 }

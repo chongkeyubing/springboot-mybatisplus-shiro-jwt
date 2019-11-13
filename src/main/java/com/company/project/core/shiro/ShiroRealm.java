@@ -5,7 +5,7 @@ import com.auth0.jwt.impl.PublicClaims;
 import com.auth0.jwt.interfaces.Claim;
 import com.company.project.core.Constant;
 import com.company.project.core.JwtUtil;
-import com.company.project.modules.sys.entity.User;
+import com.company.project.modules.sys.entity.UserEntity;
 import com.company.project.modules.sys.service.UserService;
 import com.company.project.util.WebContextUtil;
 import org.apache.shiro.authc.AuthenticationException;
@@ -54,7 +54,7 @@ public class ShiroRealm extends AuthorizingRealm {
             Long userId = claims.get(Constant.USER_ID).asLong();
             String realname = claims.get(Constant.REALNAME).asString();
 
-            User user = userService.getById(userId);
+            UserEntity user = userService.getById(userId);
             if (null == user) {
                 throw new AuthenticationException(JwtToken.TOKEN_INVALID);
             }

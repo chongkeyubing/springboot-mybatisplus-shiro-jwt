@@ -14,13 +14,13 @@ import java.util.Date;
  * </p>
  *
  * @author libaogang
- * @since 2019-11-01
+ * @since 2019-11-12
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
 @TableName("sys_role")
-public class Role implements Serializable {
+public class RoleEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

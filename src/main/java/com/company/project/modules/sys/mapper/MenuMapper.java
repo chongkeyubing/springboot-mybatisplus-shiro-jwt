@@ -1,6 +1,6 @@
 package com.company.project.modules.sys.mapper;
 
-import com.company.project.modules.sys.entity.Menu;
+import com.company.project.modules.sys.entity.MenuEntity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
@@ -9,8 +9,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * </p>
  *
  * @author libaogang
- * @since 2019-10-31
+ * @since 2019-11-12
  */
-public interface MenuMapper extends BaseMapper<Menu> {
+public interface MenuMapper extends BaseMapper<MenuEntity> {
 
 }

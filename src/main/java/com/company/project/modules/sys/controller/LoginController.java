@@ -4,7 +4,7 @@ import com.company.project.core.BusinessException;
 import com.company.project.core.JwtUtil;
 import com.company.project.core.Result;
 import com.company.project.core.ResultUtil;
-import com.company.project.modules.sys.entity.User;
+import com.company.project.modules.sys.entity.UserEntity;
 import com.company.project.modules.sys.service.UserService;
 import com.company.project.util.MD5Util;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,9 +35,9 @@ public class LoginController {
      */
     @RequestMapping("/login")
     public Result login(@RequestParam String username, @RequestParam String password) {
-        User user = userService.lambdaQuery()
-                .select(User::getUserId,User::getRealname,User::getPassword)
-                .eq(User::getUsername, username).one();
+        UserEntity user = userService.lambdaQuery()
+                .select(UserEntity::getUserId, UserEntity::getRealname, UserEntity::getPassword)
+                .eq(UserEntity::getUsername, username).one();
 
         if (null == user || !MD5Util.encrypt(password).equals(user.getPassword())) {
             throw new BusinessException("账号或者密码错误");

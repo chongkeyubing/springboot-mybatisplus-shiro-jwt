@@ -3,7 +3,7 @@
 <mapper namespace="com.company.project.modules.sys.mapper.UserMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.company.project.modules.sys.entity.User">
+    <resultMap id="BaseResultMap" type="com.company.project.modules.sys.entity.UserEntity">
         <id column="user_id" property="userId" />
         <result column="username" property="username" />
         <result column="realname" property="realname" />

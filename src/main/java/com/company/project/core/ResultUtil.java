@@ -11,14 +11,14 @@ public class ResultUtil {
     public static Result success() {
         Result result = new Result();
         result.setCode(Result.SUCCESS);
-        result.setMsg("success");
+        result.setMsg(Result.SUCCESS_MSG);
         return result;
     }
 
     public static <T> Result<T> success(T data) {
         Result<T> result = new Result<>();
         result.setCode(Result.SUCCESS);
-        result.setMsg("success");
+        result.setMsg(Result.SUCCESS_MSG);
         result.setData(data);
         return result;
     }

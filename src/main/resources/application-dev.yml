@@ -13,7 +13,7 @@ spring:
 
 mybatis-plus:
   # config-location: classpath:mybatis-config.xml
-  mapper-locations: classpath:mapper/**/*Mapper.xml  #指定mapper.xml的位置
+  mapper-locations: classpath:com/**/*Mapper.xml  #指定mapper.xml的位置
   global-config:
     db-config:
       id-type: auto
