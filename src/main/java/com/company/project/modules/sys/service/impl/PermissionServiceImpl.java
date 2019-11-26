@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -29,7 +30,7 @@ public class PermissionServiceImpl extends ServiceImpl<PermissionMapper, Permiss
     private RoleService roleService;
 
     /**
-     * 根据用户id查询菜单
+     * 根据用户id查询操作权限
      *
      * @param userId 用户id
      * @return java.util.List<com.company.project.modules.sys.entity.PermissionEntity>
@@ -43,12 +44,11 @@ public class PermissionServiceImpl extends ServiceImpl<PermissionMapper, Permiss
         for (RoleEntity roleEntity : roleEntities) {
             roleIds.add(roleEntity.getRoleId());
         }
-
         return this.listPermissionsByRoleIds(roleIds);
     }
 
     /**
-     * 根据角色id列表查询权限
+     * 根据角色id列表查询操作权限
      *
      * @param roleIds 角色id列表
      * @return java.util.List<com.company.project.modules.sys.entity.PermissionEntity>
@@ -61,6 +61,24 @@ public class PermissionServiceImpl extends ServiceImpl<PermissionMapper, Permiss
     }
 
     /**
+     * 根据用户id查询菜单列表
+     *
+     * @param userId 用户id
+     * @return java.util.List<com.company.project.modules.sys.entity.PermissionEntity>
+     * @author libaogang
+     * @since 2019-11-27 01:07:56
+     */
+    @Override
+    public List<PermissionEntity> listMenusByUserId(Long userId) {
+        List<RoleEntity> roleEntities = roleService.listRolesByUserId(userId);
+        List<Long> roleIds = new LinkedList<>();
+        for (RoleEntity roleEntity : roleEntities) {
+            roleIds.add(roleEntity.getRoleId());
+        }
+        return baseMapper.listMenusByRoleIds(roleIds);
+    }
+
+    /**
      * 根据用户id查询导航菜单树
      *
      * @param userId 用户id
@@ -70,22 +88,16 @@ public class PermissionServiceImpl extends ServiceImpl<PermissionMapper, Permiss
      */
     @Override
     public List<MenuDTO> getUserMenuTree(Long userId) {
-
         if (userId == Constant.SUPER_ADMIN_ID) {
-//            this.lambdaQuery()
-//                    .eq(PermissionEntity::getType, Constant.PermissionType.CATALOG)
-//                    .or()
-//                    .eq(PermissionEntity::getType, Constant.PermissionType.MENU)
-//                    .list();
-
-            List<PermissionEntity> menus = this.lambdaQuery()
-                    .or(i -> i.eq(PermissionEntity::getType, Constant.PermissionType.CATALOG)
-                            .eq(PermissionEntity::getType, Constant.PermissionType.MENU)
-                    ).list();
-            return constractMenuTree(menus);
+            // 所有菜单
+            List<PermissionEntity> permissionEntities = this.lambdaQuery()
+                    .eq(PermissionEntity::getType, Constant.PermissionType.CATALOG).or()
+                    .eq(PermissionEntity::getType, Constant.PermissionType.MENU)
+                    .list();
+            return constructMenuTree(permissionEntities);
         } else {
-
-            return constractMenuTree(this.list());
+            List<PermissionEntity> permissionEntities = listMenusByUserId(userId);
+            return constructMenuTree(permissionEntities);
         }
 
     }
@@ -93,48 +105,64 @@ public class PermissionServiceImpl extends ServiceImpl<PermissionMapper, Permiss
     /**
      * 根据菜单列表构建菜单树
      *
-     * @param menus 菜单列表
+     * @param allMenus 所有菜单列表
      * @return java.util.List<com.company.project.modules.sys.dto.MenuDTO>
      * @author libaogang
      * @date 2019-11-26 16:26:21
      */
-    private List<MenuDTO> constractMenuTree(List<PermissionEntity> menus) {
+    private List<MenuDTO> constructMenuTree(List<PermissionEntity> allMenus) {
+        // 获取一级目录
+        List<PermissionEntity> rootMenus = this.getSubMenusByParentId(0L, allMenus);
 
-        return null;
-    }
+        List<MenuDTO> menuTree = constructMenuDTOList(rootMenus);
 
+        recursiveConstructMenuTree(menuTree, allMenus);
 
-
-
-
-    /**
-     * 获取权限树
-     *
-     * @return java.util.List<com.company.project.modules.sys.entity.PermissionEntity>
-     * @author libaogang
-     * @date 2019-11-26 16:09:08
-     */
-    @Override
-    public List<PermissionEntity> getPermissionTree() {
-
-        return null;
+        return menuTree;
     }
 
     /**
-     * 根据权限列表构建权限树
-     *
-     * @param permissions 权限列表
-     * @return 权限树
-     * @author libaogang
-     * @date 2019-11-26 16:10:10
+     * 递归构建菜单树
      */
-    @Override
-    public List<PermissionEntity> constractPermissionTree(List<PermissionEntity> permissions) {
+    private void recursiveConstructMenuTree(List<MenuDTO> menuList, List<PermissionEntity> allMenus) {
+        for (MenuDTO menuDTO : menuList) {
+            if (menuDTO.getType() == Constant.PermissionType.CATALOG.getValue()) {
+                List<PermissionEntity> subMenus = this.getSubMenusByParentId(menuDTO.getMenuId(), allMenus);
+                List<MenuDTO> menuDTOS = constructMenuDTOList(subMenus);
+                menuDTO.setSubMenus(menuDTOS);
 
-        return null;
+                recursiveConstructMenuTree(menuDTOS, allMenus);
+            }
+        }
     }
 
+    /**
+     * 根据父id获取子菜单
+     */
+    private List<PermissionEntity> getSubMenusByParentId(long parentId, List<PermissionEntity> allMenus) {
+        List<PermissionEntity> subMenus = new ArrayList<>();
+        for (PermissionEntity permissionEntity : allMenus) {
+            if (permissionEntity.getParentId() == parentId) {
+                subMenus.add(permissionEntity);
+            }
+        }
+        return subMenus;
+    }
 
-
+    private List<MenuDTO> constructMenuDTOList(List<PermissionEntity> permissionEntityList) {
+        List<MenuDTO> menuDTOS = new LinkedList<>();
+        for (PermissionEntity permissionEntity : permissionEntityList) {
+            MenuDTO menuDTO = new MenuDTO()
+                    .setMenuId(permissionEntity.getPermissionId())
+                    .setIcon(permissionEntity.getIcon())
+                    .setOrderNum(permissionEntity.getOrderNum())
+                    .setParentId(permissionEntity.getParentId())
+                    .setType(permissionEntity.getType())
+                    .setUrl(permissionEntity.getUrl())
+                    .setName(permissionEntity.getPermissionName());
+            menuDTOS.add(menuDTO);
+        }
+        return menuDTOS;
+    }
 
 }

@@ -3,11 +3,10 @@ package com.company.project.core.shiro;
 import com.company.project.core.Result;
 import com.company.project.core.ResultUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authz.UnauthorizedException;
 import org.apache.shiro.web.filter.authc.BasicHttpAuthenticationFilter;
 import org.apache.shiro.web.util.WebUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -21,10 +20,8 @@ import java.io.PrintWriter;
  * @author libaogang
  * @since 2019-08-15 20:55
  */
+@Slf4j
 public class JwtFilter extends BasicHttpAuthenticationFilter {
-
-    private Logger LOGGER = LoggerFactory.getLogger(JwtFilter.class);
-
     public static final String AUTHORIZATION_HEADER = "Authorization";
 
     @Override
@@ -44,7 +41,7 @@ public class JwtFilter extends BasicHttpAuthenticationFilter {
     }
 
     @Override
-    protected boolean executeLogin(ServletRequest request, ServletResponse response){
+    protected boolean executeLogin(ServletRequest request, ServletResponse response) {
         String token = WebUtils.toHttp(request).getHeader(AUTHORIZATION_HEADER);
         JwtToken jwtToken = new JwtToken(token);
 
@@ -67,7 +64,7 @@ public class JwtFilter extends BasicHttpAuthenticationFilter {
             String data = objectMapper.writeValueAsString(ResultUtil.fail(Result.TOKEN_EXCEPTION, msg));
             out.write(data);
         } catch (IOException e) {
-            LOGGER.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
         }
     }
 

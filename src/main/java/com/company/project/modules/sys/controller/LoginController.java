@@ -48,7 +48,6 @@ public class LoginController {
             throw new BusinessException("账号或者密码错误");
         }
 
-
 //        //校验验证码 todo
 //        if (false) {
 //            throw new BusinessException("验证码错误");
@@ -57,5 +56,6 @@ public class LoginController {
         String token = JwtUtil.sign(user.getUserId());
         return ResultUtil.success(token);
     }
+
 
 }

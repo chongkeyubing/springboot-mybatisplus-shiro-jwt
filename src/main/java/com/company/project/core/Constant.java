@@ -33,9 +33,9 @@ public class Constant {
          */
         MENU(1),
         /**
-         * 按钮
+         * 操作
          */
-        BUTTON(2);
+        OPERATE(2);
 
         private int value;
 

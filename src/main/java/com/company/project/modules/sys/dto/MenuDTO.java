@@ -20,7 +20,7 @@ public class MenuDTO implements Serializable {
     /**
      * 菜单名称
      */
-    private String permissionName;
+    private String name;
 
     /**
      * 类型 0：目录   1：菜单   2：操作

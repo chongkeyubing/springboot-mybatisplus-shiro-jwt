@@ -60,15 +60,15 @@ public class ShiroConfig {
         // 设置 SecurityManager
         shiroFilterFactoryBean.setSecurityManager(securityManager);
         // setLoginUrl 如果不设置值，默认会自动寻找Web工程根目录下的"/login.jsp"页面 或 "/login" 映射
-        shiroFilterFactoryBean.setLoginUrl("/login");
+//        shiroFilterFactoryBean.setLoginUrl("/login");
 
         // 设置拦截器链
         Map<String, String> filterChainDefinitionMap = new LinkedHashMap<>();
 
-        //开放接口
+        // 不拦截以下请求
         filterChainDefinitionMap.put("/login", "anon");
 
-        // 所有请求通过自己的JwtFilter
+        // 其余所有请求通过自己的JwtFilter
         filterChainDefinitionMap.put("/**", "jwt");
         
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);

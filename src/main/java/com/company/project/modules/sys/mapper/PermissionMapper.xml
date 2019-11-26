@@ -19,7 +19,7 @@
         permission_id, permission_name, type, parent_id, order_num, permession_flag, url, icon
     </sql>
 
-    <!-- 根据角色id列表查询权限 -->
+    <!-- 根据角色id列表查询操作权限 -->
     <select id="listPermissionsByRoleIds" resultType="com.company.project.modules.sys.entity.PermissionEntity">
         select * from sys_permission p
         inner join sys_role_permission rp on rp.permission_id = p.permission_id
@@ -27,9 +27,19 @@
         <foreach collection="roleIds" item="roleId" open="(" close=")" separator=",">
             #{roleId}
         </foreach>
+        and type = 2
     </select>
 
-
+    <!-- 根据角色id列表查询菜单 -->
+    <select id="listMenusByRoleIds" resultType="com.company.project.modules.sys.entity.PermissionEntity">
+        select * from sys_permission p
+        inner join sys_role_permission rp on rp.permission_id = p.permission_id
+        where rp.role_id in
+        <foreach collection="roleIds" item="roleId" open="(" close=")" separator=",">
+            #{roleId}
+        </foreach>
+        and (type = 0 or type =1)
+    </select>
 
 
 </mapper>

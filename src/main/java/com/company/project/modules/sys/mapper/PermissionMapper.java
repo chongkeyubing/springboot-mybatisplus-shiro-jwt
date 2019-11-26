@@ -17,7 +17,7 @@ import java.util.List;
 public interface PermissionMapper extends BaseMapper<PermissionEntity> {
 
     /**
-     * 根据角色id列表查询权限
+     * 根据角色id列表查询操作权限
      *
      * @param roleIds 角色id列表
      * @return java.util.List<com.company.project.modules.sys.entity.PermissionEntity>
@@ -25,4 +25,14 @@ public interface PermissionMapper extends BaseMapper<PermissionEntity> {
      * @date 2019-11-26 14:25:32
      */
     List<PermissionEntity> listPermissionsByRoleIds(@Param("roleIds") List<Long> roleIds);
+
+    /**
+     * 根据角色id列表查询菜单
+     *
+     * @author libaogang
+     * @since 2019-11-27 00:51:13
+     * @param roleIds 角色id列表
+     * @return java.util.List<com.company.project.modules.sys.entity.PermissionEntity>
+     */
+    List<PermissionEntity> listMenusByRoleIds(@Param("roleIds") List<Long> roleIds);
 }

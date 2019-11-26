@@ -1,6 +1,5 @@
 package com.company.project.core.shiro;
 
-import cn.hutool.core.util.StrUtil;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.impl.PublicClaims;
 import com.company.project.core.Constant;
@@ -118,6 +117,7 @@ public class ShiroRealm extends AuthorizingRealm {
 
         // 超级管理员拥有至高无上的权限
         if (userId == Constant.SUPER_ADMIN_ID) {
+            // 所有角色
             List<RoleEntity> roleEntities = roleService.lambdaQuery()
                     .select(RoleEntity::getPermessionFlag)
                     .list();
@@ -125,16 +125,17 @@ public class ShiroRealm extends AuthorizingRealm {
                 roleList.add(roleEntity.getPermessionFlag());
             }
 
+            // 所有操作权限
             List<PermissionEntity> permissionEntities = permissionService.lambdaQuery()
                     .select(PermissionEntity::getPermessionFlag)
+                    .eq(PermissionEntity::getType, Constant.PermissionType.OPERATE.getValue())
                     .list();
+
             for (PermissionEntity permissionEntity : permissionEntities) {
-                if (StrUtil.isNotBlank(permissionEntity.getPermessionFlag())) {
-                    permissionList.add(permissionEntity.getPermessionFlag());
-                }
+                permissionList.add(permissionEntity.getPermessionFlag());
             }
         } else {
-            // 根据用户id查询所有角色
+            // 根据用户id查询角色
             List<RoleEntity> roleEntities = roleService.listRolesByUserId(userId);
             List<Long> roleIds = new ArrayList<>(roleEntities.size());
 
@@ -143,12 +144,10 @@ public class ShiroRealm extends AuthorizingRealm {
                 roleList.add(roleEntity.getPermessionFlag());
             }
 
-            // 根据角色列表查询所有权限
+            // 根据角色列表查询操作权限
             List<PermissionEntity> permissionEntities = permissionService.listPermissionsByRoleIds(roleIds);
             for (PermissionEntity permissionEntity : permissionEntities) {
-                if (StrUtil.isNotBlank(permissionEntity.getPermessionFlag())) {
-                    permissionList.add(permissionEntity.getPermessionFlag());
-                }
+                permissionList.add(permissionEntity.getPermessionFlag());
             }
         }
 
