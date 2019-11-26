@@ -17,8 +17,4 @@
         user_id, username, realname, password, status, create_time
     </sql>
 
-    <select id="listRolePermissionFlagsByUserId">
-        select
-    </select>
-
 </mapper>
