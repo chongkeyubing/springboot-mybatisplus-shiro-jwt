@@ -7,6 +7,7 @@ import lombok.experimental.Accessors;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * <p>
@@ -75,5 +76,9 @@ public class UserEntity implements Serializable {
     @TableLogic
     @TableField(select = false)
     private Integer isDeleted;
+
+    private List<RoleEntity> roles;
+
+    private List<PermissionEntity> permissions;
 
 }

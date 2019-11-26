@@ -30,14 +30,13 @@ public class CodeGenerator {
     private static final String JDBC_DIVER_CLASS_NAME = "com.mysql.cj.jdbc.Driver";
 
     private static final String BASE_PACKAGE = "com.company.project.modules";
-    private static final String AUTHOR = "libaogang"; //作者
-
     private static final boolean OVERRIDE = true; //是否覆盖已生成文件
+    private static final String AUTHOR = "libaogang"; //作者
     private static final String MODULE_NAME = "sys";  //模块名
     private static final String TABLE_PREFIX = "sys_";  //表前缀，生成的实体类会去掉前缀
 
     public static void main(String[] args) {
-        generate("sys_menu");  //支持多表
+        generate("sys_role");  //支持多表
     }
 
     private static void generate(String... tableName) {
@@ -60,7 +59,7 @@ public class CodeGenerator {
                 .setBaseColumnList(true) //mapper.xml中添加baseColumList
                 .setServiceName("%sService")  //默认生成的service接口名有I前缀，去掉I前缀。%s为对应实体名
                 .setEntityName("%sEntity");
-        //.setSwagger2(true)  // 实体属性 Swagger2 注解
+                 //.setSwagger2(true)  // 实体属性 Swagger2 注解
 
 
         //2. 策略配置

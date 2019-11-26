@@ -2,7 +2,6 @@ package com.company.project.modules.sys.controller;
 
 
 import org.springframework.web.bind.annotation.RequestMapping;
-
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -11,10 +10,10 @@ import org.springframework.web.bind.annotation.RestController;
  * </p>
  *
  * @author libaogang
- * @since 2019-11-12
+ * @since 2019-11-26
  */
 @RestController
-@RequestMapping("/sys/role-entity")
+@RequestMapping("/sys/role")
 public class RoleController {
 
 }

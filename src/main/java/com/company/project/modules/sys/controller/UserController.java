@@ -39,7 +39,7 @@ public class UserController {
     }
 
     @RequestMapping("/update")
-    public Result update(@RequestBody UserEntity user){
+    public Result update(@RequestBody UserEntity user) {
         userService.updateById(user);
         return ResultUtil.success();
     }

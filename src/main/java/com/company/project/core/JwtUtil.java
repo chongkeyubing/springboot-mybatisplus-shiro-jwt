@@ -5,6 +5,7 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.company.project.core.exception.BusinessException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,24 +36,20 @@ public class JwtUtil {
     // 写入payload的字段名
     public static final String CLAIM_USER_ID = "userId";
 
-    public static final String CLAIM_REAL_NAME = "realname";
-
     /**
      * 生成token
      *
-     * @param userId   用户，写入token payload部分
-     * @param realname 真实姓名，写入token payload部分
+     * @param userId 用户id，写入token payload部分
      * @return java.lang.String 返回token
      * @author libaogang
      * @since 2019-08-15 21:25
      */
-    public static String sign(Long userId, String realname) {
+    public static String sign(Long userId) {
         try {
             Date expire = new Date(System.currentTimeMillis() + EXPIRE_TIME);
             Algorithm algorithm = Algorithm.HMAC256(SECRET);  //算法
             return JWT.create()
                     .withClaim(Constant.USER_ID, userId)      //Payload 部分
-                    .withClaim(Constant.REALNAME, realname)
                     .withExpiresAt(expire)
                     .sign(algorithm);
         } catch (UnsupportedEncodingException e) {
@@ -85,9 +82,9 @@ public class JwtUtil {
     /**
      * 获得Token中自定义字段
      *
-     * @param token Token
-     * @param claim 要获取的字段名
-     * @return java.lang.Obejct 返回要获取的字段值
+     * @param token token
+     * @param claim 自定义字段
+     * @return com.auth0.jwt.interfaces.Claim
      * @author libaogang
      * @since 2019-08-15 21:25
      */
@@ -104,10 +101,10 @@ public class JwtUtil {
     /**
      * 获取token中所有自定义字段
      *
-     * @author libaogang
-     * @since 2019-10-31 23:02:56
      * @param token Token
      * @return java.util.Map<java.lang.String,com.auth0.jwt.interfaces.Claim>
+     * @author libaogang
+     * @since 2019-10-31 23:02:56
      */
     public static Map<String, Claim> getClaims(String token) {
         try {
@@ -121,7 +118,7 @@ public class JwtUtil {
 
 
     public static void main(String[] args) {
-        String token = sign(1L, "超级管理员");
+        String token = sign(1L);
         System.out.println(token);
 
         Long userId = getClaim(token, Constant.USER_ID).asLong();
@@ -129,8 +126,7 @@ public class JwtUtil {
 
         Map<String, Claim> claims = getClaims(token);
         Long userId1 = claims.get(Constant.USER_ID).asLong();
-        String realname = claims.get(Constant.REALNAME).asString();
-        System.out.println(userId1 + realname );
+        System.out.println(userId1);
 
         System.out.println(verify(token));
 

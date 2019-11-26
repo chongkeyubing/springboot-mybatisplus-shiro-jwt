@@ -1,5 +1,7 @@
-package com.company.project.core;
+package com.company.project.core.exception;
 
+import com.company.project.core.Result;
+import com.company.project.core.ResultUtil;
 import org.apache.shiro.authz.UnauthorizedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

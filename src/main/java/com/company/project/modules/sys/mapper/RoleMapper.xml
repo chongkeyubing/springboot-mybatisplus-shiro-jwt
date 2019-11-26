@@ -3,19 +3,26 @@
 <mapper namespace="com.company.project.modules.sys.mapper.RoleMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.company.project.modules.sys.entity.Role">
-        <id column="role_id" property="roleId" />
-        <result column="role_name" property="roleName" />
-        <result column="permession_flag" property="permessionFlag" />
-        <result column="remark" property="remark" />
-        <result column="create_user_id" property="createUserId" />
-        <result column="create_time" property="createTime" />
-        <result column="data_scope" property="dataScope" />
+    <resultMap id="BaseResultMap" type="com.company.project.modules.sys.entity.RoleEntity">
+        <id column="role_id" property="roleId"/>
+        <result column="role_name" property="roleName"/>
+        <result column="data_scope" property="dataScope"/>
+        <result column="permession_flag" property="permessionFlag"/>
+        <result column="remark" property="remark"/>
+        <result column="create_user_id" property="createUserId"/>
+        <result column="create_time" property="createTime"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        role_id, role_name, permession_flag, remark, create_user_id, create_time, data_scope
+        role_id, role_name, data_scope, permession_flag, remark, create_user_id, create_time
     </sql>
+
+    <!-- 根据用户id查询角色 -->
+    <select id="listRolesByUserId" resultType="com.company.project.modules.sys.entity.RoleEntity">
+      select r.* from sys_role r
+      inner join sys_user_role ur on ur.role_id = r.role_id
+      where ur.user_id = #{userId}
+    </select>
 
 </mapper>

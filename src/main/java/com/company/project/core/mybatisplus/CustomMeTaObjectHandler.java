@@ -1,8 +1,8 @@
 package com.company.project.core.mybatisplus;
 
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
-import com.company.project.core.Constant;
-import com.company.project.util.WebContextUtil;
+import com.company.project.modules.sys.entity.UserEntity;
+import com.company.project.util.CurrentUserUtil;
 import org.apache.ibatis.reflection.MetaObject;
 import org.springframework.stereotype.Component;
 
@@ -15,24 +15,29 @@ import org.springframework.stereotype.Component;
 @Component
 public class CustomMeTaObjectHandler implements MetaObjectHandler {
 
+    private static final String CREATE_USER_ID = "createUserId";
+
+    private static final String CREATE_USER_NAME = "createUserName";
+
+    private static final String UPDATE_USER_ID = "updateUserId";
+
     @Override
     public void insertFill(MetaObject metaObject) {
-        if (metaObject.hasSetter("createUserId")) {
-            Long userId = (Long) WebContextUtil.getRequest().getAttribute(Constant.USER_ID);
-            setInsertFieldValByName("createUserId", userId, metaObject);
+        if (metaObject.hasSetter(CREATE_USER_ID)) {
+            UserEntity user = CurrentUserUtil.getCurrentUser();
+            setInsertFieldValByName(CREATE_USER_ID, user.getUserId(), metaObject);
         }
-        if (metaObject.hasSetter("createUserName")) {
-            String realname = (String) WebContextUtil.getRequest().getAttribute(Constant.REALNAME);
-            setInsertFieldValByName("createUserName", realname, metaObject);
+        if (metaObject.hasSetter(CREATE_USER_NAME)) {
+            UserEntity user = CurrentUserUtil.getCurrentUser();
+            setInsertFieldValByName(CREATE_USER_NAME, user.getRealname(), metaObject);
         }
-
     }
 
     @Override
     public void updateFill(MetaObject metaObject) {
-        if (metaObject.hasSetter("updateUserId")) {
-            Long userId = (Long) WebContextUtil.getRequest().getAttribute(Constant.USER_ID);
-            setUpdateFieldValByName("updateUserId", userId, metaObject);
+        if (metaObject.hasSetter(UPDATE_USER_ID)) {
+            UserEntity user = CurrentUserUtil.getCurrentUser();
+            setUpdateFieldValByName(UPDATE_USER_ID, user.getUserId(), metaObject);
         }
     }
 }

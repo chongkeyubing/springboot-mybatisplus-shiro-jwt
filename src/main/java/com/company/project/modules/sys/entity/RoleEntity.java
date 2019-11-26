@@ -14,7 +14,7 @@ import java.util.Date;
  * </p>
  *
  * @author libaogang
- * @since 2019-11-12
+ * @since 2019-11-26
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -31,6 +31,11 @@ public class RoleEntity implements Serializable {
      * 角色名称
      */
     private String roleName;
+
+    /**
+     * 数据范围（1：全部数据 2：自定义 3：本部门数据权限 4：本部门及以下数据权限）
+     */
+    private Integer dataScope;
 
     /**
      * 授权标志
@@ -52,11 +57,6 @@ public class RoleEntity implements Serializable {
      * 创建时间
      */
     private Date createTime;
-
-    /**
-     * 数据范围（1：全部数据 2：自定义 3：本部门数据权限 4：本部门及以下数据权限）
-     */
-    private Integer dataScope;
 
 
 }

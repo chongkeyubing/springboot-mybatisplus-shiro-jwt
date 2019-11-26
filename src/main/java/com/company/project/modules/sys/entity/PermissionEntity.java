@@ -1,12 +1,13 @@
 package com.company.project.modules.sys.entity;
 
-import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
-import java.io.Serializable;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+
+import java.io.Serializable;
 
 /**
  * <p>
@@ -14,18 +15,31 @@ import lombok.experimental.Accessors;
  * </p>
  *
  * @author libaogang
- * @since 2019-11-12
+ * @since 2019-11-26
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@TableName("sys_menu")
-public class MenuEntity implements Serializable {
+@TableName("sys_permission")
+public class PermissionEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @TableId(value = "menu_id", type = IdType.AUTO)
-    private Long menuId;
+    /**
+     * 主键
+     */
+    @TableId(value = "permission_id", type = IdType.AUTO)
+    private Long permissionId;
+
+    /**
+     * 菜单名称
+     */
+    private String permissionName;
+
+    /**
+     * 类型 0：目录   1：菜单   2：操作
+     */
+    private Integer type;
 
     /**
      * 父菜单ID，一级菜单为0
@@ -33,14 +47,9 @@ public class MenuEntity implements Serializable {
     private Long parentId;
 
     /**
-     * 菜单名称
+     * 排序
      */
-    private String name;
-
-    /**
-     * 菜单URL
-     */
-    private String url;
+    private Integer orderNum;
 
     /**
      * 授权标志(如user:add)
@@ -48,19 +57,14 @@ public class MenuEntity implements Serializable {
     private String permessionFlag;
 
     /**
-     * 类型   0：目录   1：菜单   2：操作
+     * 菜单URL
      */
-    private Integer type;
+    private String url;
 
     /**
      * 菜单图标
      */
     private String icon;
-
-    /**
-     * 排序
-     */
-    private Integer orderNum;
 
 
 }

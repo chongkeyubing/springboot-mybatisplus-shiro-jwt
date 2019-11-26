@@ -1,4 +1,4 @@
-package com.company.project.core;
+package com.company.project.core.exception;
 
 /**
  * 业务异常

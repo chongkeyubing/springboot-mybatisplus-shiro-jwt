@@ -14,7 +14,7 @@ public class MD5Util {
     private static final String ALGORITH_NAME = "md5";
 
     //加密次数
-    private static final int HASH_ITERATIONS = 2;
+    private static final int HASH_ITERATIONS = 1;
 
     //加密盐
     private static final String SALT = "test";
