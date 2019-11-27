@@ -1,5 +1,6 @@
 package com.company.project.modules.sys.service.impl;
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.company.project.core.Constant;
 import com.company.project.modules.sys.dto.MenuDTO;
@@ -79,7 +80,7 @@ public class PermissionServiceImpl extends ServiceImpl<PermissionMapper, Permiss
     }
 
     /**
-     * 根据用户id查询导航菜单树
+     * 根据用户id查询菜单树
      *
      * @param userId 用户id
      * @return java.util.List<com.company.project.modules.sys.dto.MenuDTO>
@@ -91,8 +92,8 @@ public class PermissionServiceImpl extends ServiceImpl<PermissionMapper, Permiss
         if (userId == Constant.SUPER_ADMIN_ID) {
             // 所有菜单
             List<PermissionEntity> permissionEntities = this.lambdaQuery()
-                    .eq(PermissionEntity::getType, Constant.PermissionType.CATALOG).or()
-                    .eq(PermissionEntity::getType, Constant.PermissionType.MENU)
+                    .eq(PermissionEntity::getType, Constant.PermissionType.CATALOG.getValue()).or()
+                    .eq(PermissionEntity::getType, Constant.PermissionType.MENU.getValue())
                     .list();
             return constructMenuTree(permissionEntities);
         } else {
@@ -128,10 +129,11 @@ public class PermissionServiceImpl extends ServiceImpl<PermissionMapper, Permiss
         for (MenuDTO menuDTO : menuList) {
             if (menuDTO.getType() == Constant.PermissionType.CATALOG.getValue()) {
                 List<PermissionEntity> subMenus = this.getSubMenusByParentId(menuDTO.getMenuId(), allMenus);
-                List<MenuDTO> menuDTOS = constructMenuDTOList(subMenus);
-                menuDTO.setSubMenus(menuDTOS);
-
-                recursiveConstructMenuTree(menuDTOS, allMenus);
+                if(CollectionUtil.isNotEmpty(subMenus)){
+                    List<MenuDTO> menuDTOS = constructMenuDTOList(subMenus);
+                    menuDTO.setSubMenus(menuDTOS);
+                    recursiveConstructMenuTree(menuDTOS, allMenus);
+                }
             }
         }
     }
@@ -149,6 +151,9 @@ public class PermissionServiceImpl extends ServiceImpl<PermissionMapper, Permiss
         return subMenus;
     }
 
+    /**
+     * 根据PermissionEntity列表构建MenuDTO列表
+     */
     private List<MenuDTO> constructMenuDTOList(List<PermissionEntity> permissionEntityList) {
         List<MenuDTO> menuDTOS = new LinkedList<>();
         for (PermissionEntity permissionEntity : permissionEntityList) {

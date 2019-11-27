@@ -77,8 +77,10 @@ public class UserEntity implements Serializable {
     @TableField(select = false)
     private Integer isDeleted;
 
+    @TableField(exist = false)
     private List<RoleEntity> roles;
 
+    @TableField(exist = false)
     private List<PermissionEntity> permissions;
 
 }

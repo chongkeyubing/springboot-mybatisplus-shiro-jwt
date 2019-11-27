@@ -40,7 +40,7 @@ public class RoleEntity implements Serializable {
     /**
      * 授权标志
      */
-    private String permessionFlag;
+    private String permissionFlag;
 
     /**
      * 备注

@@ -54,7 +54,7 @@ public class PermissionEntity implements Serializable {
     /**
      * 授权标志(如user:add)
      */
-    private String permessionFlag;
+    private String permissionFlag;
 
     /**
      * 菜单URL

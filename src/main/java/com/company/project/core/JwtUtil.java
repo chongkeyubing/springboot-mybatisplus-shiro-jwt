@@ -118,7 +118,7 @@ public class JwtUtil {
 
 
     public static void main(String[] args) {
-        String token = sign(1L);
+        String token = sign(2L);
         System.out.println(token);
 
         Long userId = getClaim(token, Constant.USER_ID).asLong();

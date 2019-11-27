@@ -119,20 +119,20 @@ public class ShiroRealm extends AuthorizingRealm {
         if (userId == Constant.SUPER_ADMIN_ID) {
             // 所有角色
             List<RoleEntity> roleEntities = roleService.lambdaQuery()
-                    .select(RoleEntity::getPermessionFlag)
+                    .select(RoleEntity::getPermissionFlag)
                     .list();
             for (RoleEntity roleEntity : roleEntities) {
-                roleList.add(roleEntity.getPermessionFlag());
+                roleList.add(roleEntity.getPermissionFlag());
             }
 
             // 所有操作权限
             List<PermissionEntity> permissionEntities = permissionService.lambdaQuery()
-                    .select(PermissionEntity::getPermessionFlag)
+                    .select(PermissionEntity::getPermissionFlag)
                     .eq(PermissionEntity::getType, Constant.PermissionType.OPERATE.getValue())
                     .list();
 
             for (PermissionEntity permissionEntity : permissionEntities) {
-                permissionList.add(permissionEntity.getPermessionFlag());
+                permissionList.add(permissionEntity.getPermissionFlag());
             }
         } else {
             // 根据用户id查询角色
@@ -141,13 +141,13 @@ public class ShiroRealm extends AuthorizingRealm {
 
             for (RoleEntity roleEntity : roleEntities) {
                 roleIds.add(roleEntity.getRoleId());
-                roleList.add(roleEntity.getPermessionFlag());
+                roleList.add(roleEntity.getPermissionFlag());
             }
 
             // 根据角色列表查询操作权限
             List<PermissionEntity> permissionEntities = permissionService.listPermissionsByRoleIds(roleIds);
             for (PermissionEntity permissionEntity : permissionEntities) {
-                permissionList.add(permissionEntity.getPermessionFlag());
+                permissionList.add(permissionEntity.getPermissionFlag());
             }
         }
 

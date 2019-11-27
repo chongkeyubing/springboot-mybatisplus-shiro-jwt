@@ -46,7 +46,7 @@ public interface PermissionService extends IService<PermissionEntity> {
     List<PermissionEntity> listMenusByUserId(Long userId);
 
     /**
-     * 根据用户id查询导航菜单树
+     * 根据用户id查询菜单树
      *
      * @param userId 用户id
      * @return java.util.List<com.company.project.modules.sys.dto.MenuDTO>
