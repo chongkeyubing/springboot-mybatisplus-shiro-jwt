@@ -35,7 +35,7 @@ public class PermissionController {
      * @date 2019-11-27 09:13:28
      */
     @RequestMapping("/getUserMenuTree")
-    @RequiresPermissions("")
+    @RequiresPermissions("sys:user:add")
     public Result getUserMenuTree() {
         List<MenuDTO> userMenuTree = permissionService.getUserMenuTree(CurrentUserUtil.getCurrentUserId());
         return ResultUtil.success(userMenuTree);

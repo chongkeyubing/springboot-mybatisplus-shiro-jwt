@@ -11,7 +11,7 @@
  Target Server Version : 50723
  File Encoding         : 65001
 
- Date: 26/11/2019 17:23:19
+ Date: 28/11/2019 17:08:46
 */
 
 SET NAMES utf8mb4;
@@ -292,6 +292,53 @@ CREATE TABLE `sys_dept`  (
 ) ENGINE = InnoDB CHARACTER SET = latin1 COLLATE = latin1_swedish_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
+-- Table structure for sys_dict
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_dict`;
+CREATE TABLE `sys_dict`  (
+  `dict_id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `dict_name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '字典名称',
+  `dict_code` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '字典编码',
+  `status` tinyint(1) NOT NULL COMMENT '状态：0正常1停用',
+  `create_user_id` bigint(20) NOT NULL COMMENT '创建人id',
+  `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
+  `update_user_id` bigint(20) NULL DEFAULT NULL COMMENT '更新人id',
+  `update_time` datetime(0) NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
+  `remark` varchar(1000) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '备注',
+  PRIMARY KEY (`dict_id`) USING BTREE,
+  UNIQUE INDEX `uk_dict_code`(`dict_code`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '字典表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of sys_dict
+-- ----------------------------
+INSERT INTO `sys_dict` VALUES (1, '性别', 'SEX', 0, 1, '2019-11-28 16:46:46', NULL, NULL, NULL);
+
+-- ----------------------------
+-- Table structure for sys_dict_item
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_dict_item`;
+CREATE TABLE `sys_dict_item`  (
+  `item_id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `dict_code` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '字典编码',
+  `text` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '字典文本',
+  `value` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '字典值',
+  `sort` int(11) NOT NULL COMMENT '排序',
+  `status` tinyint(1) NOT NULL COMMENT '状态：0正常1停用',
+  `create_user_id` bigint(20) NOT NULL COMMENT '创建人id',
+  `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
+  `update_user_id` bigint(20) NULL DEFAULT NULL COMMENT '更新人id',
+  `update_time` datetime(0) NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
+  PRIMARY KEY (`item_id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '字典项表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of sys_dict_item
+-- ----------------------------
+INSERT INTO `sys_dict_item` VALUES (1, 'SEX', '男', '0', 0, 0, 1, '2019-11-28 16:47:20', NULL, NULL);
+INSERT INTO `sys_dict_item` VALUES (2, 'SEX', '女', '1', 1, 0, 1, '2019-11-28 16:48:02', NULL, NULL);
+
+-- ----------------------------
 -- Table structure for sys_log
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_log`;
@@ -321,14 +368,16 @@ CREATE TABLE `sys_permission`  (
   `url` varchar(500) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '菜单URL',
   `icon` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '菜单图标',
   PRIMARY KEY (`permission_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '权限表(包括菜单)' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '权限表(包括菜单)' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of sys_permission
 -- ----------------------------
 INSERT INTO `sys_permission` VALUES (1, '系统管理', 0, 0, 0, NULL, NULL, '');
-INSERT INTO `sys_permission` VALUES (2, '用户管理', 1, 1, 0, NULL, NULL, '');
+INSERT INTO `sys_permission` VALUES (2, '用户管理', 0, 1, 0, NULL, NULL, '');
 INSERT INTO `sys_permission` VALUES (3, '角色管理', 1, 1, 1, NULL, NULL, '');
+INSERT INTO `sys_permission` VALUES (4, '权限管理', 1, 1, 2, NULL, NULL, NULL);
+INSERT INTO `sys_permission` VALUES (5, '添加用户', 2, 2, 0, 'sys:user:add', NULL, NULL);
 
 -- ----------------------------
 -- Table structure for sys_role
@@ -343,7 +392,12 @@ CREATE TABLE `sys_role`  (
   `create_user_id` bigint(20) NOT NULL COMMENT '创建者ID',
   `create_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
   PRIMARY KEY (`role_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '角色' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '角色' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of sys_role
+-- ----------------------------
+INSERT INTO `sys_role` VALUES (1, '管理员', 1, 'admin', '管理员', 1, '2019-11-27 09:32:30');
 
 -- ----------------------------
 -- Table structure for sys_role_permission
@@ -354,7 +408,17 @@ CREATE TABLE `sys_role_permission`  (
   `role_id` bigint(20) NOT NULL COMMENT '角色ID',
   `permission_id` bigint(20) NOT NULL COMMENT '权限ID',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '角色与菜单对应关系' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '角色与菜单对应关系' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of sys_role_permission
+-- ----------------------------
+INSERT INTO `sys_role_permission` VALUES (1, 1, 1);
+INSERT INTO `sys_role_permission` VALUES (2, 1, 2);
+INSERT INTO `sys_role_permission` VALUES (3, 1, 3);
+INSERT INTO `sys_role_permission` VALUES (4, 1, 4);
+INSERT INTO `sys_role_permission` VALUES (5, 1, 5);
+INSERT INTO `sys_role_permission` VALUES (6, 1, 6);
 
 -- ----------------------------
 -- Table structure for sys_user
@@ -390,6 +454,11 @@ CREATE TABLE `sys_user_role`  (
   `user_id` bigint(20) NULL DEFAULT NULL COMMENT '用户ID',
   `role_id` bigint(20) NULL DEFAULT NULL COMMENT '角色ID',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '用户与角色对应关系' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '用户与角色对应关系' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of sys_user_role
+-- ----------------------------
+INSERT INTO `sys_user_role` VALUES (1, 2, 1);
 
 SET FOREIGN_KEY_CHECKS = 1;

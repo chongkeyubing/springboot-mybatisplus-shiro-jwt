@@ -30,13 +30,13 @@ public class CodeGenerator {
     private static final String JDBC_DIVER_CLASS_NAME = "com.mysql.cj.jdbc.Driver";
 
     private static final String BASE_PACKAGE = "com.company.project.modules";
-    private static final boolean OVERRIDE = true; //是否覆盖已生成文件
+    private static final boolean OVERRIDE = false; //是否覆盖已生成文件
     private static final String AUTHOR = "libaogang"; //作者
     private static final String MODULE_NAME = "sys";  //模块名
     private static final String TABLE_PREFIX = "sys_";  //表前缀，生成的实体类会去掉前缀
 
     public static void main(String[] args) {
-        generate("sys_role");  //支持多表
+        generate("sys_dict","sys_dict_item");  //支持多表
     }
 
     private static void generate(String... tableName) {
